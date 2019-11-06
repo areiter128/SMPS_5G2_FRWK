@@ -4,6 +4,7 @@
 #
 # Updated May 07, 2015, C14029
 # Updated May 30, 2019, M91406
+# Updated Nov 06, 2019, M91406, excluding framework folder 'apps' and user code files in 'config' module folders
 
 # Object files
 *.o
@@ -13,6 +14,20 @@
 
 # Executables
 *.exe
+
+# Appliation layer user files exclusions
+h/_root/config
+h/apl/app
+h/apl/driver
+h/apl/config
+h/hal/config
+h/mcal/config
+src/_root/config
+src/apl/app
+src/apl/driver
+src/apl/config
+src/hal/config
+src/mcal/config
 
 # Netbeans specific
 ~*.*

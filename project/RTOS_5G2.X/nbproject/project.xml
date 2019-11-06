@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>com.microchip.mplab.nbide.embedded.makeproject</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/make-project/1">
+            <name>RTOS_5G2</name>
+            <creation-uuid>c75a9aa7-94cd-4ba7-9587-5a73431cf4a5</creation-uuid>
+            <make-project-type>0</make-project-type>
+            <c-extensions>c</c-extensions>
+            <cpp-extensions/>
+            <header-extensions>h</header-extensions>
+            <asminc-extensions/>
+            <sourceEncoding>ISO-8859-1</sourceEncoding>
+            <make-dep-projects>
+                <make-dep-project>../../plib/p33SMPS_mcal.X</make-dep-project>
+            </make-dep-projects>
+            <sourceRootList>
+                <sourceRootElem>../h</sourceRootElem>
+                <sourceRootElem>../h/_root</sourceRootElem>
+                <sourceRootElem>../h/_root/config</sourceRootElem>
+                <sourceRootElem>../h/_root/generic</sourceRootElem>
+                <sourceRootElem>../h/apl</sourceRootElem>
+                <sourceRootElem>../h/apl/app</sourceRootElem>
+                <sourceRootElem>../h/apl/config</sourceRootElem>
+                <sourceRootElem>../h/apl/driver</sourceRootElem>
+                <sourceRootElem>../h/hal</sourceRootElem>
+                <sourceRootElem>../h/hal/config</sourceRootElem>
+                <sourceRootElem>../h/hal/initialization</sourceRootElem>
+                <sourceRootElem>../h/mcal</sourceRootElem>
+                <sourceRootElem>../h/mcal/config</sourceRootElem>
+                <sourceRootElem>../h/mcal/generic</sourceRootElem>
+                <sourceRootElem>../h/sfl</sourceRootElem>
+                <sourceRootElem>../src</sourceRootElem>
+            </sourceRootList>
+            <confList>
+                <confElem>
+                    <name>MA330048_P33CK_R30</name>
+                    <type>2</type>
+                </confElem>
+            </confList>
+            <formatting>
+                <project-formatting-style>false</project-formatting-style>
+            </formatting>
+        </data>
+    </configuration>
+</project>

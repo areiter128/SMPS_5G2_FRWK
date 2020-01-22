@@ -37,43 +37,43 @@
 #include "p33SMPS_gpio.h"
 
 // Private Function Prototypes
-volatile uint16_t gpio_write_config(volatile GPIO_REGISTER_TYPE_e reg_type, volatile GPIO_DEVICE_PIN_CONFIG_t pin_cfg);
-volatile uint16_t gpio_clear_config(volatile GPIO_REGISTER_TYPE_e reg_type, volatile bool bit_value);
+volatile uint16_t smpsGPIO_WriteConfig(volatile GPIO_REGISTER_TYPE_e reg_type, volatile GPIO_CONFIG_t pin_cfg);
+volatile uint16_t smpsGPIO_ClearConfig(volatile GPIO_REGISTER_TYPE_e reg_type, volatile bool bit_value);
 
 
-inline volatile uint16_t gpio_init(void) {
+volatile uint16_t smpsGPIO_Initialize(void) {
 
     volatile uint16_t fres = 1;
     
-    fres &= gpio_clear_config(GPIO_ANSEL, false); // reset port pin analog/digital input setting
-    fres &= gpio_clear_config(GPIO_TRIS, true);   // reset port pin weak pull-up resistor setting
-    fres &= gpio_clear_config(GPIO_LAT, false);   // reset port pin weak pull-down resistor setting
-    fres &= gpio_clear_config(GPIO_ODC, false);   // reset port pin open drain setting
-    fres &= gpio_clear_config(GPIO_CNPU, false);  // reset port pin logic direction setting
-    fres &= gpio_clear_config(GPIO_CNPD, false);  // reset port pin latch setting
+    fres &= smpsGPIO_ClearConfig(GPIO_ANSEL, false); // reset port pin analog/digital input setting
+    fres &= smpsGPIO_ClearConfig(GPIO_TRIS, true);   // reset port pin weak pull-up resistor setting
+    fres &= smpsGPIO_ClearConfig(GPIO_LAT, false);   // reset port pin weak pull-down resistor setting
+    fres &= smpsGPIO_ClearConfig(GPIO_ODC, false);   // reset port pin open drain setting
+    fres &= smpsGPIO_ClearConfig(GPIO_CNPU, false);  // reset port pin logic direction setting
+    fres &= smpsGPIO_ClearConfig(GPIO_CNPD, false);  // reset port pin latch setting
     
     return (fres);
     
 }
 
 
-inline volatile uint16_t gpio_set_io_config(volatile GPIO_DEVICE_PIN_CONFIG_t pin_cfg) {
+volatile uint16_t smpsGPIO_SetIOConfig(volatile GPIO_CONFIG_t pin_cfg) {
     
     volatile uint16_t fres = 1;
 
-    fres &= gpio_write_config(GPIO_ANSEL, pin_cfg);
-    fres &= gpio_write_config(GPIO_TRIS, pin_cfg);
-    fres &= gpio_write_config(GPIO_LAT, pin_cfg);
-    fres &= gpio_write_config(GPIO_ODC, pin_cfg);
-    fres &= gpio_write_config(GPIO_CNPU, pin_cfg);
-    fres &= gpio_write_config(GPIO_CNPD, pin_cfg);
+    fres &= smpsGPIO_WriteConfig(GPIO_ANSEL, pin_cfg);
+    fres &= smpsGPIO_WriteConfig(GPIO_TRIS, pin_cfg);
+    fres &= smpsGPIO_WriteConfig(GPIO_LAT, pin_cfg);
+    fres &= smpsGPIO_WriteConfig(GPIO_ODC, pin_cfg);
+    fres &= smpsGPIO_WriteConfig(GPIO_CNPU, pin_cfg);
+    fres &= smpsGPIO_WriteConfig(GPIO_CNPD, pin_cfg);
     
     return(fres);
 }
 
 
 
-inline volatile uint16_t gpio_clear_config(volatile GPIO_REGISTER_TYPE_e reg_type, volatile bool bit_value) {
+volatile uint16_t smpsGPIO_ClearConfig(volatile GPIO_REGISTER_TYPE_e reg_type, volatile bool bit_value) {
     
     volatile uint16_t fres = 1;
     volatile uint16_t regval = 0;
@@ -249,7 +249,7 @@ inline volatile uint16_t gpio_clear_config(volatile GPIO_REGISTER_TYPE_e reg_typ
     return(fres);
 }
 
-inline volatile uint16_t gpio_write_config(volatile GPIO_REGISTER_TYPE_e reg_type, volatile GPIO_DEVICE_PIN_CONFIG_t pin_cfg) {
+volatile uint16_t smpsGPIO_WriteConfig(volatile GPIO_REGISTER_TYPE_e reg_type, volatile GPIO_CONFIG_t pin_cfg) {
     
     volatile uint16_t fres = 1;
     volatile uint16_t *regptr16;

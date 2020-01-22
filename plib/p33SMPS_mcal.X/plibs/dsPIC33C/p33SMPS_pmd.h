@@ -19,14 +19,7 @@
  * MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE 
  * TERMS. 
  * ***************************************************************************/
-/*!p33MP_gpio.c
- * ***************************************************************************
- *
- * File:   p33MP_gpio.c
- * Author: M91406
- *
- * Created on October 27, 2017, 11:24 AM
- * ***************************************************************************/
+
 /*!p33SMPS_pmd.h
  * ***************************************************************************
  *
@@ -41,8 +34,8 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef _MCAL_P33_SMPS_PDM_H_
-#define	_MCAL_P33_SMPS_PDM_H_
+#ifndef MCAL_P33SMPS_PDM_H
+#define	MCAL_P33SMPS_PDM_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include <stdint.h>
@@ -149,11 +142,12 @@
 // enum for power states
 typedef enum
 {
-    PMD_POWER_ON = 0, 
-    PMD_POWER_OFF = 1
-}pmd_enable_setting_e;
+    PMD_POWER_ON = 0,   // Peripheral is powered and ready to be configured and operate
+    PMD_POWER_OFF = 1   // Peripheral is not powered. Any writes to SFRs will have no effect
+}PMD_ENABLE_SETTING_e;
 
-#if defined (__P33SMPS_CK__)
+#if defined (__P33SMPS_CH_MSTR__) || defined (__P33SMPS_CH_SLV__) || defined (__P33SMPS_CK__)
+
     #define PMD1_VALID_DATA_MASK    0b0000111011111011
     #define PMD2_VALID_DATA_MASK    0b0000000111111111
     #define PMD3_VALID_DATA_MASK    0b0000000110101110
@@ -162,12 +156,13 @@ typedef enum
     #define PMD6_VALID_DATA_MASK    0b0000111100000001
     #define PMD7_VALID_DATA_MASK    0b0000011100001000
     #define PMD8_VALID_DATA_MASK    0b0011100100111110
+
 #else
     #pragma message "=== selected device is not defined and may not be supported ==="
 #endif
 
 // global prototypes
-extern volatile uint16_t pmd_reset(pmd_enable_setting_e power_on_state);
+extern volatile uint16_t smpsPMD_SetPowerStateAll(PMD_ENABLE_SETTING_e power_on_state);
 
-#endif	/* MCAL_P33_SMPS_PDM_H */
+#endif	/* MCAL_P33SMPS_PDM_H */
 

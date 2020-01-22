@@ -14,14 +14,20 @@
 # Executables
 *.exe
 
+# Project specific
+plibs/
+plibs/P33C/
+plibs/P33E/
+p33SMPS_mcal.X/plibs/
+p33SMPS_mcal.X/plibs/P33C/
+p33SMPS_mcal.X/plibs/P33E/
+
 # Netbeans specific
 ~*.*
 nbproject/build/
-nbproject/dist/
 nbproject/private/
 nbproject/disassembly/
 build/
-dist/
 private/
 disassembly/
 *.zip
@@ -40,5 +46,7 @@ Makefile-genesis.properties
 .svn
 *.bak
 
-
+# ALLOW THESE FILES & FOLDERS
+!p33SMPS_mcal.X/dist/
+!dist/
 

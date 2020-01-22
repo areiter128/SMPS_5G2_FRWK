@@ -35,8 +35,8 @@
  * - REFCLK is not supported
  * ***************************************************************************/
 
-#ifndef __MCAL_P33_GS_OSCILLATOR_H__
-#define __MCAL_P33_GS_OSCILLATOR_H__
+#ifndef MCAL_P33SMPS_OSCILLATOR_H
+#define MCAL_P33SMPS_OSCILLATOR_H
 
 #include <stdint.h>
 
@@ -1095,12 +1095,12 @@ typedef enum {
  *	Prototypes
  * **************************************************************************************/
 
-extern volatile uint16_t init_FRCOSC(CLKDIV_FRCDIVN_e frc_div, OSCTUN_TUN_e frc_tun);
-extern volatile uint16_t init_FOSC(OSC_CONFIG_t osc_config);
-extern volatile uint16_t init_AUXCLK(AUXOSC_CONFIG_t aux_clock_config);
+extern volatile uint16_t smpsOSC_Initialize(volatile OSC_CONFIG_t osc_config);
+extern volatile uint16_t smpsOSC_FRC_Initialize(volatile CLKDIV_FRCDIVN_e frc_div, volatile OSCTUN_TUN_e frc_tun);
+extern volatile uint16_t smpsOSC_AUXCLK_Initialize(volatile AUXOSC_CONFIG_t aux_clock_config);
 
-extern volatile uint16_t init_FRCCLK_Defaults(CPU_SPEED_DEFAULTS_e cpu_speed);
-extern volatile uint16_t init_AUXCLK_Defaults(AUX_PLL_DEFAULTS_e afpllo_frequency);
-extern volatile uint16_t osc_get_frequencies(uint32_t pri_osc_frequency);
+extern volatile uint16_t smpsOSC_FRC_DefaultInitialize(volatile CPU_SPEED_DEFAULTS_e cpu_speed);
+extern volatile uint16_t smpsOSC_AUXCLK_DefaultInitialize(volatile AUX_PLL_DEFAULTS_e afpllo_frequency);
+extern volatile uint16_t smpsOSC_GetFrequencies(volatile uint32_t pri_osc_frequency);
 
-#endif  /* __MCAL_P33_SMPS_OSCILLATOR_H__ */
+#endif  /* MCAL_P33SMPS_OSCILLATOR_H */

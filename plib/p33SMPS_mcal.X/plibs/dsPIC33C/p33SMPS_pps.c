@@ -24,13 +24,13 @@
 
 #include "p33SMPS_pps.h"
 
-/*!p33GS_pps.c
+/*!p33SMPS_pps.c
  * ************************************************************************************************
  * Summary:
  * Generic Peripheral Pin Select (PPS) Driver Module
  *
  * Dependencies:    
- * pps.h
+ * p33SMPS_pps.h
  *
  * Description:
  * Some low-pincount devices have the capability to assign digital functions to a range of 
@@ -52,7 +52,7 @@
  *  05/29/2019  Added RPx pin configuration lock/unlock sequence for dsPIC33C
  * ***********************************************************************************************/
 
-/*!pps_LockIO
+/*!smpsPPS_LockIO
  * ************************************************************************************************
  * Summary:
  * Locks the Peripheral Pin Select Configuration registers against accidental changes
@@ -75,10 +75,10 @@
  * operation will be allowed. all following calls of Unlock() or Lock() will be ignored. 
  *
  * See Also:
- *	p33EGS_pps.h, FOSC, IOL1WAY, IOL1WAY_ON, IOL1WAY_OFF; pps_UnlockIO
+ *	p33EGS_pps.h, FOSC, IOL1WAY, IOL1WAY_ON, IOL1WAY_OFF; smpsPPS_UnlockIO
  * 
  * ***********************************************************************************************/
-inline volatile uint16_t pps_LockIO(void){
+volatile uint16_t smpsPPS_LockIO(void){
 
 #if defined (__P33SMPS_FJ__) || defined (__P33SMPS_EP__)
     // IOLOCK sequence is performed on OCCON register
@@ -99,26 +99,27 @@ inline volatile uint16_t pps_LockIO(void){
     
 #elif defined (__P33SMPS_CH__) || defined (__P33SMPS_CK__)
     // IOLOCK sequence is performed on NVMKEY register
-	asm volatile
-	(	"push.s \n"
-		"disi #5 \n"
-		"mov #0x55,w1 \n"
-		"mov #0xAA, w2 \n"
-		"mov w1, _NVMKEY \n"
-		"mov w2, _NVMKEY \n"
-		"bset _RPCON, #11 \n"
-		"disi #0 \n"			// see errata
-		"nop \n"
-		"nop \n"
-        "pop.s \n"
-	);
-    
+//	asm volatile
+//	(	"push.s \n"
+//		"disi #5 \n"
+//		"mov #0x55,w1 \n"
+//		"mov #0xAA, w2 \n"
+//		"mov w1, _NVMKEY \n"
+//		"mov w2, _NVMKEY \n"
+//		"bset _RPCON, #11 \n"
+//		"disi #0 \n"			// see errata
+//		"nop \n"
+//		"nop \n"
+//        "pop.s \n"
+//	);
+
+    __builtin_write_RPCON(0x0800); // lock PPS
     return(RPCONbits.IOLOCK);
 #endif
     
 }
 
-/*!pps_UnlockIO
+/*!smpsPPS_UnlockIO
  * ************************************************************************************************
  * Summary:
  * Unlocks the Peripheral Pin Select Configuration registers to enable changes
@@ -140,10 +141,10 @@ inline volatile uint16_t pps_LockIO(void){
  * operation wil be allowed. all following calls of Unlock() or Lock() will be ignored. 
  *
  * See Also:
- *	pps.h, FOSC, IOL1WAY, IOL1WAY_ON, IOL1WAY_OFF, pps_LockIO
+ *	pps.h, FOSC, IOL1WAY, IOL1WAY_ON, IOL1WAY_OFF, smpsPPS_LockIO
  * 
  * ***********************************************************************************************/
-inline volatile uint16_t pps_UnlockIO(void){
+volatile uint16_t smpsPPS_UnlockIO(void){
 
 #if defined (__P33SMPS_FJ__) || defined (__P33SMPS_EP__)
     // IOLOCK sequence is performed on OCCON register only
@@ -164,26 +165,28 @@ inline volatile uint16_t pps_UnlockIO(void){
     
 #elif defined (__P33SMPS_CH__) || defined (__P33SMPS_CK__)
     // IOLOCK sequence is performed on RPCON using NVMKEY register to unlock
-	asm volatile
-	(	"push.s \n"
-		"disi #5 \n"
-		"mov #0x55,w1 \n"
-		"mov #0xAA, w2 \n"
-		"mov w1, _NVMKEY \n"
-		"mov w2, _NVMKEY \n"
-		"bclr _RPCON, #11 \n"
-		"disi #0 \n"			// see errata
-		"nop \n"
-		"nop \n"
-        "pop.s \n"
-	);
-    
+
+//	asm volatile
+//	(	"push.s \n"
+//		"disi #5 \n"
+//		"mov #0x55,w1 \n"
+//		"mov #0xAA, w2 \n"
+//		"mov w1, _NVMKEY \n"
+//		"mov w2, _NVMKEY \n"
+//		"bclr _RPCON, #11 \n"
+//		"disi #0 \n"			// see errata
+//		"nop \n"
+//		"nop \n"
+//        "pop.s \n"
+//	);
+
+    __builtin_write_RPCON(0x0000); // unlock PPS
     return(1 - RPCONbits.IOLOCK);
 #endif
     
 }
 
-/*!pps_RemapOutput
+/*!smpsPPS_RemapOutput
  * ************************************************************************************************
  * Summary:
  * Assigns a digital function output to a pin
@@ -200,17 +203,17 @@ inline volatile uint16_t pps_UnlockIO(void){
  * Any supported digital function output (e.g. UART TxD) can be assigned to one of the RPx pins
  * of the MCU/DSC. To assign a function output to a pin, call 
  *
- *	pps_RemapOutput([RP-NUMBER], [FUNCTION])
+ *	smpsPPS_RemapOutput([RP-NUMBER], [FUNCTION])
  * 
  * Example:
- *	lres |= pps_RemapOutput(PIN_RP9 , PPSOUT_SYNCO1);	// Assign RP9 to PWMSyncClkOutput
+ *	lres |= smpsPPS_RemapOutput(PIN_RP9 , PPSOUT_SYNCO1);	// Assign RP9 to PWMSyncClkOutput
  *
  * See Also:
- *	pps.h, FOSC, IOL1WAY, IOL1WAY_ON, IOL1WAY_OFF, pps_LockIO, pps_UnlockIO, pps_RemapInput, 
- *  pps_UnmapOutput, pps_UnmapInput
+ *	p33SMPS_pps.h, FOSC, IOL1WAY, IOL1WAY_ON, IOL1WAY_OFF, smpsPPS_LockIO, smpsPPS_UnlockIO, smpsPPS_RemapInput, 
+ *  smpsPPS_UnmapOutput, smpsPPS_UnmapInput
  * 
  * ***********************************************************************************************/
-inline volatile uint16_t pps_RemapOutput(uint8_t pinno, uint8_t peripheral){
+volatile uint16_t smpsPPS_RemapOutput(volatile uint8_t pinno, volatile uint8_t peripheral){
 	
     volatile uint16_t fres = 0;
     volatile uint8_t *regptr;
@@ -227,7 +230,7 @@ inline volatile uint16_t pps_RemapOutput(uint8_t pinno, uint8_t peripheral){
 
 }
 
-/*!pps_RemapInput
+/*!smpsPPS_RemapInput
  * ************************************************************************************************
  * Summary:
  * Assigns a pin to a digital function input
@@ -244,17 +247,17 @@ inline volatile uint16_t pps_RemapOutput(uint8_t pinno, uint8_t peripheral){
  * Any RPx pin can be assigned to a supported digital function input (e.g. UART RxD). To assign 
  * a pin to a function input, call 
  *
- *	pps_RemapInput([RP-NUMBER], [FUNCTION])
+ *	smpsPPS_RemapInput([RP-NUMBER], [FUNCTION])
  * 
  * Example:
- *	lres |= pps_RemapInput(PIN_RP10, PPSIN_U1RX);		// Assign RP10 to UART1 RxD
+ *	lres |= smpsPPS_RemapInput(PIN_RP10, PPSIN_U1RX);		// Assign RP10 to UART1 RxD
  *
  * See Also:
- *	pps.h, FOSC, IOL1WAY, IOL1WAY_ON, IOL1WAY_OFF, pps_LockIO, pps_UnlockIO, pps_RemapOutput, 
- *  pps_UnmapInput, pps_UnmapOutput
+ *	p33SMPS_pps.h, FOSC, IOL1WAY, IOL1WAY_ON, IOL1WAY_OFF, smpsPPS_LockIO, smpsPPS_UnlockIO, smpsPPS_RemapOutput, 
+ *  smpsPPS_UnmapInput, smpsPPS_UnmapOutput
  * 
  * ***********************************************************************************************/
-inline volatile uint16_t pps_RemapInput(uint8_t pinno, uint8_t *peripheral)
+volatile uint16_t smpsPPS_RemapInput(volatile uint8_t pinno, volatile uint8_t *peripheral)
 {
 
 	// Map selected pin function
@@ -264,7 +267,7 @@ inline volatile uint16_t pps_RemapInput(uint8_t pinno, uint8_t *peripheral)
   
 }
 
-/*!pps_UnmapOutput
+/*!smpsPPS_UnmapOutput
  * ************************************************************************************************
  * Summary:
  * Disconnects a pin from a digital function output
@@ -280,27 +283,27 @@ inline volatile uint16_t pps_RemapInput(uint8_t pinno, uint8_t *peripheral)
  * An existing assignment between any RPx pin and a supported digital function output will be
  * dissolved.
  *
- *	pps_UnmapOutput([RP-NUMBER])
+ *	smpsPPS_UnmapOutput([RP-NUMBER])
  * 
  * Example:
- *	lres |= pps_UnmapOutput(PIN_RP9);		// Dissolve RP9 assignment
+ *	lres |= smpsPPS_UnmapOutput(PIN_RP9);		// Dissolve RP9 assignment
  *
  * See Also:
- *	pps.h, FOSC, IOL1WAY, IOL1WAY_ON, IOL1WAY_OFF, pps_LockIO, pps_UnlockIO, pps_RemapInput, 
- *  pps_RemapOutput, pps_UnmapInput
+ *	p33SMPS_pps.h, FOSC, IOL1WAY, IOL1WAY_ON, IOL1WAY_OFF, smpsPPS_LockIO, smpsPPS_UnlockIO, smpsPPS_RemapInput, 
+ *  smpsPPS_RemapOutput, smpsPPS_UnmapInput
  * 
  * ***********************************************************************************************/
-inline volatile uint16_t pps_UnmapOutput(uint8_t pinno)
+volatile uint16_t smpsPPS_UnmapOutput(volatile uint8_t pinno)
 {
     volatile uint16_t fres=0;
 
 	// Unmap selected pin function
-	fres = pps_RemapOutput(pinno, PPSPIN_NULL);
+	fres = smpsPPS_RemapOutput(pinno, PPSPIN_NULL);
 	return fres;
 
 }
 
-/*!pps_UnmapInput
+/*!smpsPPS_UnmapInput
  * ************************************************************************************************
  * Summary:
  * Disconnects a pin from a digital function input
@@ -316,22 +319,22 @@ inline volatile uint16_t pps_UnmapOutput(uint8_t pinno)
  * An existing assignment between any RPx pin and a supported digital function input will be
  * dissolved.
  *
- *	pps_UnmapInput([RP-NUMBER])
+ *	smpsPPS_UnmapInput([RP-NUMBER])
  * 
  * Example:
- *	lres |= pps_UnmapInput(PIN_RP10);		// Dissolve RP10 assignment
+ *	lres |= smpsPPS_UnmapInput(PIN_RP10);		// Dissolve RP10 assignment
  *
  * See Also:
- *	pps.h, FOSC, IOL1WAY, IOL1WAY_ON, IOL1WAY_OFF, pps_LockIO, pps_UnlockIO, pps_RemapInput, 
- *  pps_RemapOutput, pps_UnmapOutput
+ *	p33SMPS_pps.h, FOSC, IOL1WAY, IOL1WAY_ON, IOL1WAY_OFF, smpsPPS_LockIO, smpsPPS_UnlockIO, smpsPPS_RemapInput, 
+ *  smpsPPS_RemapOutput, smpsPPS_UnmapOutput
  * 
  * ***********************************************************************************************/
-inline volatile uint16_t pps_UnmapInput(uint8_t* peripheral)
+volatile uint16_t smpsPPS_UnmapInput(volatile uint8_t* peripheral)
 {
     volatile uint16_t fres=0;
 
 	// Unmap selected pin function
-	fres = pps_RemapInput(PPSPIN_NULL, peripheral);
+	fres = smpsPPS_RemapInput(PPSPIN_NULL, peripheral);
 	return fres;
 
 }

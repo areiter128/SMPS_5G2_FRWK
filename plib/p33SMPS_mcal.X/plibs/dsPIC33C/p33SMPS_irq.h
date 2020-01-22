@@ -36,8 +36,8 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef _P33GS_INTERRUPT_CONFIG_DEF_H_
-#define	_P33GS_INTERRUPT_CONFIG_DEF_H_
+#ifndef _MCAL_P33_SMPS_INTERRUPT_CONFIG_DEF_H_
+#define	_MCAL_P33_SMPS_INTERRUPT_CONFIG_DEF_H_
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include <stdint.h>
@@ -807,15 +807,15 @@ typedef struct {
 }INTERRUPT_CONFIG_t; // Interrupt Controller Configuration Register Set
 
 
-extern volatile uint16_t gsirq_irq_initialize(volatile INTERRUPT_CONFIG_t intcon);
-extern volatile uint16_t gsirq_get_current_irq_priority_level(void);
-extern volatile uint16_t gsirq_get_current_irq_vector(void);
-extern volatile uint16_t gsirq_soft_traps_initialize(
+extern volatile uint16_t smpsIRQ_Initialize(volatile INTERRUPT_CONFIG_t intcon);
+extern volatile uint16_t smpsIRQ_GetCurrentPriority(void);
+extern volatile uint16_t smpsIRQ_GetCurrentVector(void);
+extern volatile uint16_t smpsIRQ_SoftTrapsInitialize(
                     uint16_t accumulator_a_overflow_trap_enable, 
                     uint16_t accumulator_b_overflow_trap_enable, 
                     uint16_t accumulator_catastrophic_overflow_trap_enable
                     );
 
 
-#endif	/* _P33GS_INTERRUPT_CONFIG_DEF_H_ */
+#endif	/* _MCAL_P33_SMPS_INTERRUPT_CONFIG_DEF_H_ */
 

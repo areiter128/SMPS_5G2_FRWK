@@ -29,7 +29,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-/*!p33GS_irq.c
+/*!p33SMPS_irq.c
  * ************************************************************************************************
  * Summary:
  * Driver file for the dsPIC33 Interrupt Controller SFRs
@@ -41,7 +41,7 @@
  * ***********************************************************************************************/
 
 
-/*!gsirq_init_irq
+/*!smpsIRQ_Initialize
  * ************************************************************************************************
  * Summary:
  * Initializes the basic interrupt controller configuration
@@ -54,7 +54,7 @@
  * are set here.
  * ***********************************************************************************************/
 
-inline volatile uint16_t gsirq_irq_initialize(volatile INTERRUPT_CONFIG_t intcon)
+volatile uint16_t smpsIRQ_Initialize(volatile INTERRUPT_CONFIG_t intcon)
 {
 
     volatile uint16_t fres=0;
@@ -84,7 +84,7 @@ inline volatile uint16_t gsirq_irq_initialize(volatile INTERRUPT_CONFIG_t intcon
 	
 }
 
-/*!gsirq_get_current_irq_priority_level
+/*!smpsIRQ_GetCurrentPriority
  * ************************************************************************************************
  * Summary:
  * Reads the current interrupt priority level from SR and CORCON register
@@ -100,7 +100,7 @@ inline volatile uint16_t gsirq_irq_initialize(volatile INTERRUPT_CONFIG_t intcon
  * a unsigned integer number
  * ***********************************************************************************************/
 
-inline volatile uint16_t gsirq_get_current_irq_priority_level(void)
+volatile uint16_t smpsIRQ_GetCurrentPriority(void)
 {
 
     volatile uint16_t reg_buf=0;
@@ -112,7 +112,7 @@ inline volatile uint16_t gsirq_get_current_irq_priority_level(void)
 	return(reg_buf);
 	
 }
-/*!gsirq_get_current_irq_vector
+/*!smpsIRQ_GetCurrentVector
  * ************************************************************************************************
  * Summary:
  * Reads the recent interrupt vector number from INTTREG register
@@ -128,12 +128,12 @@ inline volatile uint16_t gsirq_get_current_irq_priority_level(void)
  * a unsigned integer number
  * ***********************************************************************************************/
 
-inline volatile uint16_t gsirq_get_current_irq_vector(void)
+volatile uint16_t smpsIRQ_GetCurrentVector(void)
 {
     return(INTTREGbits.VECNUM);
 }
 
-/*!gsirq_init_soft_traps
+/*!smpsIRQ_SoftTrapsInitialize
  * ************************************************************************************************
  * Summary:
  * Initializes the soft traps for accumulator overflow options
@@ -149,7 +149,7 @@ inline volatile uint16_t gsirq_get_current_irq_vector(void)
  * and the catastrophic overflow event trap. (on/off options) 
  * ***********************************************************************************************/
 
-inline volatile uint16_t gsirq_soft_traps_initialize(
+volatile uint16_t smpsIRQ_SoftTrapsInitialize(
                     uint16_t accumulator_a_overflow_trap_enable, 
                     uint16_t accumulator_b_overflow_trap_enable, 
                     uint16_t accumulator_catastrophic_overflow_trap_enable)

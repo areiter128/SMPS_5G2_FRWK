@@ -21,8 +21,8 @@
  *
  * ***********************************************************************************************/
 
-#ifndef _P33SMPS_SMPS_PWM_H_
-#define _P33SMPS_SMPS_PWM_H_
+#ifndef MCAL_P33SMPS_HSPWM_H
+#define MCAL_P33SMPS_HSPWM_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -1901,18 +1901,18 @@ extern volatile uint16_t hspwm_set_duty_cycle(
     uint16_t regPGxDCA
     );
 
-extern volatile uint16_t hspwm_power_enable(void);
-extern volatile uint16_t hspwm_power_disable(void);
-extern volatile uint16_t hspwm_enable_pwm(uint16_t instance, bool wait_for_hres);
-extern volatile uint16_t hspwm_disable_pwm(uint16_t instance);
-extern volatile uint16_t hspwm_ovr_hold(uint16_t instance);
-extern volatile uint16_t hspwm_ovr_release(uint16_t instance);
-extern volatile uint16_t hspwm_ovr_release_high_side(uint16_t instance);
-extern volatile uint16_t hspwm_ovr_release_low_side(uint16_t instance);
-extern volatile uint16_t hspwm_set_gpio_high_side(uint16_t instance);
-extern volatile uint16_t hspwm_reset_gpio_high_side(uint16_t instance);
-extern volatile uint16_t hspwm_set_gpio_low_side(uint16_t instance);
-extern volatile uint16_t hspwm_reset_gpio_low_side(uint16_t instance);
+extern volatile uint16_t smpsHSPWM_PowerUp(void);
+extern volatile uint16_t smpsHSPWM_PowerDown(void);
+extern volatile uint16_t smpsHSPWM_Enable(volatile uint16_t instance, volatile bool wait_for_hres);
+extern volatile uint16_t smpsHSPWM_Disable(volatile uint16_t instance);
+extern volatile uint16_t smpsHSPWM_OVR_Hold(volatile uint16_t instance);
+extern volatile uint16_t smpsHSPWM_OVR_Release(volatile uint16_t instance);
+extern volatile uint16_t smpsHSPWM_OVR_ReleaseHighSide(volatile uint16_t instance);
+extern volatile uint16_t smpsHSPWM_OVR_ReleaseLowSide(volatile uint16_t instance);
+extern volatile uint16_t smpsHSPWM_SetGPIO_HighSide(volatile uint16_t instance);
+extern volatile uint16_t smpsHSPWM_ResetGPIO_HighSide(volatile uint16_t instance);
+extern volatile uint16_t smpsHSPWM_SetGPIO_LowSide(volatile uint16_t instance);
+extern volatile uint16_t smpsHSPWM_ResetGPIO_LowSide(volatile uint16_t instance);
 
 #endif
-// End of File _P33SMPS_SMPS_PWM_H_
+// End of File MCAL_P33SMPS_HSPWM_H

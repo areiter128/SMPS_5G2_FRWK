@@ -37,8 +37,8 @@
  * 
  * ***************************************************************************/
 
-#ifndef MCAL_P33_SMPS_TIMER_H
-#define MCAL_P33_SMPS_TIMER_H
+#ifndef MCAL_P33SMPS_TIMER_H
+#define MCAL_P33SMPS_TIMER_H
 
 #include <xc.h>
 #include <stdint.h>
@@ -363,14 +363,14 @@ typedef union
 
 // Prototypes
 
-extern volatile uint16_t gstmr_power_on(uint16_t instance);
-extern volatile uint16_t gstmr_power_off(uint16_t instance);
-extern volatile uint16_t gstmr_init_timer16b(uint16_t instance, TxCON_CONTROL_REGISTER_t regTCON, uint32_t period, TIMER_ISR_PRIORITY_e isr_priority);
-extern volatile uint16_t gstmr_get_tmr_config(uint16_t instance, TxCON_CONTROL_REGISTER_t *regTCON, uint32_t period, TIMER_ISR_PRIORITY_e *isr_priority);
-extern volatile uint16_t gstmr_enable(uint16_t instance, TIMER_ISR_ENABLE_STATE_e isr_enable);
-extern volatile uint16_t gstmr_disable(uint16_t instance);
-extern volatile uint16_t gstmr_reset(uint16_t instance);
-
+extern volatile uint16_t smpsTimer_PowerOn(uint16_t instance);
+extern volatile uint16_t smpsTimer_PowerOff(uint16_t instance);
+extern volatile uint16_t smpsTimer_Initialize16b(uint16_t instance, TxCON_CONTROL_REGISTER_t regTCON, uint32_t period, TIMER_ISR_PRIORITY_e isr_priority);
+extern volatile uint16_t smpsTimer_GetTimerConfig(uint16_t instance, TxCON_CONTROL_REGISTER_t *regTCON, uint32_t period, TIMER_ISR_PRIORITY_e *isr_priority);
+extern volatile uint16_t smpsTimer_Enable(uint16_t instance, TIMER_ISR_ENABLE_STATE_e isr_enable);
+extern volatile uint16_t smpsTimer_Disable(uint16_t instance);
+extern volatile uint16_t smpsTimer_Reset(uint16_t instance);
+extern volatile uint16_t smpsTimer_Dispose(uint16_t instance);
 
 
 #endif  /* MCAL_P33_SMPS_TIMER_H */

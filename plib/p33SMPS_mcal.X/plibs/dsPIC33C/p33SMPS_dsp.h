@@ -21,8 +21,8 @@
  *
  * ***********************************************************************************************/
 
-#ifndef __P33SMPS_DSP_H__
-#define __P33SMPS_DSP_H__
+#ifndef MCAL_P33SMPS_DSP_H
+#define MCAL_P33SMPS_DSP_H
 
 #include "../p33SMPS_devices.h"
 
@@ -37,10 +37,6 @@
  * header file contains defines for all required bit-settings of all related registers.
  * This file is an additional header file on top of the generic device header file.
  * ***********************************************************************************************/
-
-// Prototypes
-
-extern uint16_t gsdsp_init_dsp(uint16_t regCORCON);
 
 // Global Flags and bit-masks
 
@@ -198,34 +194,34 @@ typedef enum {
     CORCON_IF_FRACTIONAL = 0b0 // Fractional mode is enabled for DSP multiply
 } CORCON_IF_e; // Integer or Fractional Multiplier Mode Select bit
 
-
-typedef struct {
-    volatile CORCON_IF_e IF : 1; // Integer or Fractional Multiplier Mode Select bit
-    volatile CORCON_RND_e RND : 1; // Rounding Mode Select bit
-    volatile CORCON_SFA_e SFA : 1; // Stack Frame Active Status bit
-    volatile CORCON_IPL3_STAT_e IPL3 : 1; // CPU Interrupt Priority Level Status bit 3
-    volatile CORCON_ACCSAT_e ACCSAT : 1; // Accumulator Saturation Mode Select bit
-    volatile CORCON_SATDW_e SATDW : 1; // Data Space Write from DSP Engine Saturation Enable bit
-    volatile CORCON_SATB_e SATB : 1; // ACCB Saturation Enable bit
-    volatile CORCON_SATA_e SATA : 1; // ACCA Saturation Enable bit
-    
-    volatile CORCON_DL_STAT_e DL : 3; // DO Loop Nesting Level Status bits
-    volatile CORCON_EDT_e EDT : 1; // Early DO Loop Termination Control bit
-    volatile CORCON_US_e US : 2; // DSP Multiply Unsigned/Signed Control bits
-    volatile unsigned : 1; // reserved
-    volatile CORCON_VAR_e VAR : 1; // Variable Exception Processing Latency Control bit
-} __attribute__((packed)) CORCON_t; // CORCON: CORE CONTROL REGISTER
-
 typedef union {
+
+    struct {
+        volatile CORCON_IF_e IF : 1; // Integer or Fractional Multiplier Mode Select bit
+        volatile CORCON_RND_e RND : 1; // Rounding Mode Select bit
+        volatile CORCON_SFA_e SFA : 1; // Stack Frame Active Status bit
+        volatile CORCON_IPL3_STAT_e IPL3 : 1; // CPU Interrupt Priority Level Status bit 3
+        volatile CORCON_ACCSAT_e ACCSAT : 1; // Accumulator Saturation Mode Select bit
+        volatile CORCON_SATDW_e SATDW : 1; // Data Space Write from DSP Engine Saturation Enable bit
+        volatile CORCON_SATB_e SATB : 1; // ACCB Saturation Enable bit
+        volatile CORCON_SATA_e SATA : 1; // ACCA Saturation Enable bit
+
+        volatile CORCON_DL_STAT_e DL : 3; // DO Loop Nesting Level Status bits
+        volatile CORCON_EDT_e EDT : 1; // Early DO Loop Termination Control bit
+        volatile CORCON_US_e US : 2; // DSP Multiply Unsigned/Signed Control bits
+        volatile unsigned : 1; // reserved
+        volatile CORCON_VAR_e VAR : 1; // Variable Exception Processing Latency Control bit
+    } __attribute__((packed)) bits; // CORCON: CORE CONTROL REGISTER
+
     volatile uint16_t value;
-    volatile CORCON_t CORCON;
-} REGBLK_CORCON_t; // CORCON: CORE CONTROL REGISTER
+
+} CORCON_t; // CORCON: CORE CONTROL REGISTER
 
 
 /* PROTOTYPES */
-extern volatile uint16_t p33_init_dsp(REGBLK_CORCON_t dsp_cfg);
-extern volatile REGBLK_CORCON_t p33SMPS_get_dsp_config(void);
+extern volatile uint16_t smpsDSP_Initialize(volatile CORCON_t dsp_cfg);
+extern volatile CORCON_t smpsDSP_GetConfig(void);
 
 #endif /* dsPIC33CH/CK only */
-#endif /* end of __P33EGS_DSP_H__ */ 
+#endif /* end of MCAL_P33SMPS_DSP_H */ 
 

@@ -27,8 +27,8 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef _DEVICE_CONFIGURATION_OSCILLATOR_H_
-#define	_DEVICE_CONFIGURATION_OSCILLATOR_H_
+#ifndef MCAL_P33SMPS_DEVCFG_OSCILLATOR_H
+#define	MCAL_P33SMPS_DEVCFG_OSCILLATOR_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include <stdint.h>
@@ -247,5 +247,5 @@
 
 
             
-#endif	/* _DEVICE_CONFIGURATION_OSCILLATOR_H_ */
+#endif	/* MCAL_P33SMPS_DEVCFG_OSCILLATOR_H */
 

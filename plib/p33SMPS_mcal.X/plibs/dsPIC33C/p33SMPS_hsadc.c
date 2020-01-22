@@ -53,7 +53,7 @@ volatile uint16_t adcc_usage=0; // Private variable tracking the ADC cores in us
  * 
  * *****************************************************************************************************/
 
-volatile uint16_t hsadc_module_power_up(void)
+volatile uint16_t smpsADC_Module_PowerUp(void)
 {
     volatile uint16_t fres=1;
 
@@ -91,7 +91,7 @@ volatile uint16_t hsadc_module_power_up(void)
  * 
  * *****************************************************************************************************/
 
-volatile uint16_t hsadc_module_power_down(void)
+volatile uint16_t smpsADC_Module_PowerDown(void)
 {
     volatile uint16_t fres=1;
     
@@ -134,15 +134,15 @@ volatile uint16_t hsadc_module_power_down(void)
  * Basic options like clock source, early interrupts, format options, sampling order and modes
  * are set here.
  * ***********************************************************************************************/
-volatile uint16_t hsadc_adc_module_initialize( volatile HSADC_ADMODCFG_t adc_cfg )
+volatile uint16_t smpsADC_ModuleInitialize( volatile HSADC_ADMODCFG_t adc_cfg )
 {
     volatile uint16_t fres = 1;
     
     // Ensure ADC module is powered up before registers are written
-    fres &= hsadc_module_power_up();
+    fres &= smpsADC_Module_PowerUp();
     
 	// Reset all ADC configuration registers to defaults
-    fres &= hsadc_module_reset();
+    fres &= smpsADC_Module_Reset();
     
 	// Setting ADC configuration block #1 according to user settings.
 	// Please note:
@@ -214,7 +214,7 @@ volatile uint16_t hsadc_adc_module_initialize( volatile HSADC_ADMODCFG_t adc_cfg
  * This routine configures the individual settings of an analog input .
  * ***********************************************************************************************/
 
-volatile uint16_t hsadc_adc_input_initialize( volatile HSADC_ADCANCFG_t adin_cfg ) {
+volatile uint16_t smpsADC_ADInput_Initialize( volatile HSADC_ADCANCFG_t adin_cfg ) {
     
     volatile uint16_t fres = 1;
     
@@ -226,16 +226,16 @@ volatile uint16_t hsadc_adc_input_initialize( volatile HSADC_ADCANCFG_t adin_cfg
 
     // Set AD input mode (differential or single ended) and 
     // Conversion data output format (signed/unsigned)
-    fres &= hsadc_set_adc_input_mode(adin_cfg);
+    fres &= smpsADC_ADInput_SetMode(adin_cfg);
 
     // Set interrupt enable and early interrupt enable
-    fres &= hsadc_set_adc_input_interrupt(adin_cfg);
+    fres &= smpsADC_ADInput_SetInterrupt(adin_cfg);
     
     // Set interrupt trigger mode (level/edge)
-    fres &= hsadc_set_adc_input_trigger_mode(adin_cfg);
+    fres &= smpsADC_ADInput_SetTriggerMode(adin_cfg);
 
     // Set interrupt trigger source
-    fres &= hsadc_set_adc_input_trigger_source(adin_cfg);
+    fres &= smpsADC_ADInput_SetTriggerSource(adin_cfg);
 
     
     return(fres);
@@ -254,7 +254,7 @@ volatile uint16_t hsadc_adc_input_initialize( volatile HSADC_ADCANCFG_t adin_cfg
  * enable-instruction is followed by a short delay loop.
  * ***********************************************************************************************/
 
-volatile uint16_t hsadc_module_enable(void)
+volatile uint16_t smpsADC_Module_Enable(void)
 {
     volatile uint16_t fres=1;
     volatile uint16_t i=0;
@@ -267,7 +267,7 @@ volatile uint16_t hsadc_module_enable(void)
     for (i=0; i<ADC_CORE_COUNT; i++) { // Check which of the ADC cores need to be enabled
         adcore_check = (adcc_usage & (0x0001 << i)); // User ADC Core tracking variable to identify active cores
         if (adcore_check)
-        { fres &= hsadc_adc_core_power_on(i); } // enable active ADC core
+        { fres &= smpsADC_Core_PowerUp(i); } // enable active ADC core
     }
     
 	return(fres);
@@ -286,7 +286,7 @@ volatile uint16_t hsadc_module_enable(void)
  * at certain pins will be lost as every pin will be re-configured as GPIO.
  * ***********************************************************************************************/
 
-volatile uint16_t hsadc_module_disable(void)
+volatile uint16_t smpsADC_Module_Disable(void)
 {
 
 	ADCON1Lbits.ADON = ADC_OFF;			// Disable ADC module 
@@ -306,7 +306,7 @@ volatile uint16_t hsadc_module_disable(void)
  * become GPIOs.
  * ***********************************************************************************************/
 
-volatile uint16_t hsadc_module_reset(void) {
+volatile uint16_t smpsADC_Module_Reset(void) {
     
     /* ToDo: Add register contents check after WRITE */
     
@@ -333,7 +333,9 @@ volatile uint16_t hsadc_module_reset(void) {
     ADMOD0L    = REG_ADMOD0L_RESET;     // Disable and reset ADC INPUT MODE CONTROL REGISTER 0 LOW
     ADMOD0H    = REG_ADMOD0H_RESET;     // Disable and reset ADC INPUT MODE CONTROL REGISTER 0 HIGH
     ADMOD1L    = REG_ADMOD1L_RESET;     // Disable and reset ADC INPUT MODE CONTROL REGISTER 1 LOW
+    #ifdef ADMOD1H
     ADMOD1H    = REG_ADMOD1H_RESET;     // Disable and reset ADC INPUT MODE CONTROL REGISTER 1 HIGH     
+    #endif
     ADIEL      = REG_ADIEL_RESET;       // Disable and reset ADC INTERRUPT ENABLE REGISTER LOW
     ADIEH      = REG_ADIEH_RESET;       // Disable and reset ADC INTERRUPT ENABLE REGISTER HIGH
     ADSTATL    = REG_ADSTATL_RESET;     // Disable and reset ADC DATA READY STATUS REGISTER LOW 
@@ -371,7 +373,7 @@ volatile uint16_t hsadc_module_reset(void) {
  * an OK/NOT_READY response.
  * ***********************************************************************************************/
 
-volatile uint16_t hsadc_adc_cores_check_ready(void)
+volatile uint16_t smpsADC_Core_CheckReady(void)
 {
     volatile uint16_t fres = 1;
     volatile uint16_t timeout = 0;
@@ -414,7 +416,7 @@ volatile uint16_t hsadc_adc_cores_check_ready(void)
  * 
  * ***********************************************************************************************/
 
-volatile uint16_t hsadc_adc_core_power_on(volatile uint16_t index)
+volatile uint16_t smpsADC_Core_PowerUp(volatile uint16_t index)
 {
     volatile uint16_t fres=1;
     volatile uint16_t *regptr;
@@ -490,7 +492,7 @@ volatile uint16_t hsadc_adc_core_power_on(volatile uint16_t index)
  * 
  * ***********************************************************************************************/
 
-volatile uint16_t hsadc_set_adc_input_trigger_source(volatile HSADC_ADCANCFG_t adin_cfg)
+volatile uint16_t smpsADC_ADInput_SetTriggerSource(volatile HSADC_ADCANCFG_t adin_cfg)
 {
     volatile uint16_t fres = 1;
     volatile uint8_t *regptr;
@@ -526,7 +528,7 @@ volatile uint16_t hsadc_set_adc_input_trigger_source(volatile HSADC_ADCANCFG_t a
  * Those interrupts can be "pulled-in" to compensate the interrupt latency of the controller
  * ***********************************************************************************************/
 
-volatile uint16_t hsadc_set_adc_input_interrupt(volatile HSADC_ADCANCFG_t adin_cfg)
+volatile uint16_t smpsADC_ADInput_SetInterrupt(volatile HSADC_ADCANCFG_t adin_cfg)
 {
     volatile uint16_t fres = 1;
     volatile uint16_t ad_idx = 0;
@@ -601,7 +603,7 @@ volatile uint16_t hsadc_set_adc_input_interrupt(volatile HSADC_ADCANCFG_t adin_c
  * register bits.
  * ***********************************************************************************************/
 
-volatile uint16_t hsadc_set_adc_input_trigger_mode(volatile HSADC_ADCANCFG_t adin_cfg)
+volatile uint16_t smpsADC_ADInput_SetTriggerMode(volatile HSADC_ADCANCFG_t adin_cfg)
 {
     volatile uint16_t fres = 1;
     volatile uint16_t regval = 0;
@@ -662,7 +664,7 @@ volatile uint16_t hsadc_set_adc_input_trigger_mode(volatile HSADC_ADCANCFG_t adi
  * This function is used to enable the desired mode by setting the related register bits.
  * ***********************************************************************************************/
 
-volatile uint16_t hsadc_set_adc_input_mode(volatile HSADC_ADCANCFG_t adin_cfg) 
+volatile uint16_t smpsADC_ADInput_SetMode(volatile HSADC_ADCANCFG_t adin_cfg) 
 {
     volatile uint16_t fres = 1;
     volatile uint16_t ad_idx=0;
@@ -742,7 +744,7 @@ volatile uint16_t hsadc_set_adc_input_mode(volatile HSADC_ADCANCFG_t adin_cfg)
  * This routine allows configuration of the comparator, the input source and its thresholds.
  * ***********************************************************************************************/
 
-volatile uint16_t hsadc_init_adc_comp(volatile uint16_t index, volatile HSADC_ADCMP_CONFIG_t adcmp_cfg)
+volatile uint16_t smpsADC_ADComp_Initialize(volatile uint16_t index, volatile HSADC_ADCMP_CONFIG_t adcmp_cfg)
 {
 
     volatile uint16_t fres = 1;
@@ -826,7 +828,7 @@ volatile uint16_t hsadc_init_adc_comp(volatile uint16_t index, volatile HSADC_AD
  * The filter result register FLTxDAT will be reset or pre-charged, but not updated automatically.
  * ***********************************************************************************************/
 
-volatile uint16_t hsadc_init_adc_filter(volatile uint16_t index, volatile HSADC_ADFLT_CONFIG_t adflt_cfg) {
+volatile uint16_t smpsADC_ADFilter_Initialize(volatile uint16_t index, volatile HSADC_ADFLT_CONFIG_t adflt_cfg) {
 
     volatile uint16_t fres = 1;
     volatile uint16_t *regptr16;

@@ -19,14 +19,7 @@
  * MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE 
  * TERMS. 
  * ***************************************************************************/
-/*!p33MP_gpio.c
- * ***************************************************************************
- *
- * File:   p33MP_gpio.c
- * Author: M91406
- *
- * Created on October 27, 2017, 11:24 AM
- * ***************************************************************************/
+
 /*!p33SMPS_pmd.c
  * ***************************************************************************
  *
@@ -41,11 +34,39 @@
 
 #include "p33SMPS_pmd.h"
 
-inline volatile uint16_t pmd_reset(pmd_enable_setting_e power_on_state) {
+/*!smpsPMD_SetPowerStateAll
+ * ***************************************************************************
+ * Summary: Sets the power state of all peripherals
+ * 
+ * Parameters:
+ *     PMD_ENABLE_SETTING_e power_state:
+ *          - 0 = Peripheral is powered
+ *          - 1 = Peripheral is not powered
+ * 
+ * Returns:
+ *      uint16_t:   0 = failure
+ *                  1 = success
+  * Description:
+ * The Peripheral Module Disable (PMD) register allows users to cut power
+ * to a number of certain peripherals to reduce/optimize power consumption.
+ * All peripherals are enabled by default when the device is coming out of
+ * RESET. 
+ * This function allows users to determine/change the default state by
+ * enabling/disabling all peripherals.
+ * 
+ * Please note:
+ * All peripheral driver modules of this library offers individual functions
+ * to enable/disable specific peripherals. Every initialization routine will
+ * check and, when necessary, turn on power to the specific peripheral before
+ * reading from/writing to its Special Function Registers (SFR).
+ * 
+ * ***************************************************************************/
+
+volatile uint16_t smpsPMD_SetPowerStateAll(PMD_ENABLE_SETTING_e power_state) {
     
     volatile uint16_t regval=0;
     
-    if (power_on_state == PMD_POWER_OFF)
+    if (power_state == PMD_POWER_OFF)
     { regval = 0xFFFF; }
     
     #ifdef PMDCON

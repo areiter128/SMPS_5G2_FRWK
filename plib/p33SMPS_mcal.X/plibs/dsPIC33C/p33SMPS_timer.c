@@ -45,10 +45,10 @@
 #include "p33SMPS_timer.h"
 
 
-/*!p33MP_timer.c
+/*!p33SMPS_timer.h
  * ************************************************************************************************
  * Summary:
- * Driver file for the dsPIC33xxxGS Timer SFRs
+ * Driver file for the dsPIC33CxxMP Timer SFRs
  *
  * Description:
  * The timer module offers a number of registers and configuration options. This additional
@@ -56,7 +56,7 @@
  * ***********************************************************************************************/
 
 
-volatile uint16_t gstmr_power_on(uint16_t instance) 
+volatile uint16_t smpsTimer_PowerOn(uint16_t instance) 
 {
 
     volatile uint16_t fres=0;
@@ -107,7 +107,7 @@ volatile uint16_t gstmr_power_on(uint16_t instance)
 
 }
 
-volatile uint16_t gstmr_power_off(uint16_t instance) 
+volatile uint16_t smpsTimer_PowerOff(uint16_t instance) 
 {
 
     volatile uint16_t fres=0;
@@ -158,7 +158,7 @@ volatile uint16_t gstmr_power_off(uint16_t instance)
 
 }
 
-/*!gstmr_init_timer16b
+/*!smpsTimer_Initialize16b
  * ************************************************************************************************
  * Summary:
  * Initializes a specific timer unit in 16-bit mode
@@ -178,13 +178,13 @@ volatile uint16_t gstmr_power_off(uint16_t instance)
  * ***********************************************************************************************/
 
 
-inline volatile uint16_t gstmr_init_timer16b(uint16_t instance, TxCON_CONTROL_REGISTER_t regTCON, uint32_t period, TIMER_ISR_PRIORITY_e isr_priority)
+volatile uint16_t smpsTimer_Initialize16b(uint16_t instance, TxCON_CONTROL_REGISTER_t regTCON, uint32_t period, TIMER_ISR_PRIORITY_e isr_priority)
 {
 
     volatile uint32_t per_buf=0;
     volatile uint16_t reg_buf=0, tmr_reg_msk=0;
 
-    if (!gstmr_power_on(instance)) return(0);
+    if (!smpsTimer_PowerOn(instance)) return(0);
 	if (instance > GSTMR_TIMER_COUNT) return(0); // Skip if index is out of range
 
 	// Set register bit masks to prevent setting of unsupported features
@@ -302,7 +302,7 @@ inline volatile uint16_t gstmr_init_timer16b(uint16_t instance, TxCON_CONTROL_RE
 
 }
 
-inline volatile uint16_t gstmr_get_tmr_config(uint16_t instance, TxCON_CONTROL_REGISTER_t *regTCON, uint32_t period, TIMER_ISR_PRIORITY_e *isr_priority)
+volatile uint16_t smpsTimer_GetTimerConfig(uint16_t instance, TxCON_CONTROL_REGISTER_t *regTCON, uint32_t period, TIMER_ISR_PRIORITY_e *isr_priority)
 {
     
     volatile uint32_t reg_buf=0;
@@ -366,7 +366,7 @@ inline volatile uint16_t gstmr_get_tmr_config(uint16_t instance, TxCON_CONTROL_R
 }
 
 
-/*!gstmr_enable
+/*!smpsTimer_Enable
  * ************************************************************************************************
  * Summary:
  * Enables a specific timer unit in 16-bit mode
@@ -379,10 +379,10 @@ inline volatile uint16_t gstmr_get_tmr_config(uint16_t instance, TxCON_CONTROL_R
  * ***********************************************************************************************/
 
 
-inline volatile uint16_t gstmr_enable(uint16_t instance, TIMER_ISR_ENABLE_STATE_e isr_enable)
+volatile uint16_t smpsTimer_Enable(uint16_t instance, TIMER_ISR_ENABLE_STATE_e isr_enable)
 {
 	
-    if (!gstmr_power_on(instance)) return(0);
+    if (!smpsTimer_PowerOn(instance)) return(0);
 	if (instance > GSTMR_TIMER_COUNT) return(0); // Skip if index is out of range
 	
 	switch (instance)
@@ -441,7 +441,7 @@ inline volatile uint16_t gstmr_enable(uint16_t instance, TIMER_ISR_ENABLE_STATE_
 }
 
 
-/*!gstmr_disable
+/*!smpsTimer_Disable
  * ************************************************************************************************
  * Summary:
  * Disables a specific timer unit in 16-bit mode
@@ -454,7 +454,7 @@ inline volatile uint16_t gstmr_enable(uint16_t instance, TIMER_ISR_ENABLE_STATE_
  * ***********************************************************************************************/
 
 
-inline volatile uint16_t gstmr_disable(uint16_t instance)
+volatile uint16_t smpsTimer_Disable(uint16_t instance)
 {
 	
 	if (instance > GSTMR_TIMER_COUNT) return(0); // Skip if index is out of range
@@ -499,8 +499,7 @@ inline volatile uint16_t gstmr_disable(uint16_t instance)
 
 }
 
-
-/*!gstmr_reset
+/*!smpsTimer_Reset
  * ************************************************************************************************
  * Summary:
  * Resets a specific timer unit in 16-bit mode
@@ -512,8 +511,7 @@ inline volatile uint16_t gstmr_disable(uint16_t instance)
  * This routine is disabling the selected timer and resets its entire configuration.
  * ***********************************************************************************************/
 
-
-inline volatile uint16_t gstmr_reset(uint16_t instance)
+volatile uint16_t smpsTimer_Reset(uint16_t instance)
 {
 	
 	if (instance > GSTMR_TIMER_COUNT) return(0); // Skip if index is out of range
@@ -558,5 +556,27 @@ inline volatile uint16_t gstmr_reset(uint16_t instance)
 
 }
 
+/*!smpsTimer_Dispose
+ * ************************************************************************************************
+ * Summary:
+ * Resets a specific timer and turns off the power
+ *
+ * Parameters:
+ *	index		= selects the register address range of the target timer unit
+ *
+ * Description:
+ * This routine is disabling the selected timer and resets its entire configuration.
+ * ***********************************************************************************************/
+
+volatile uint16_t smpsTimer_Dispose(uint16_t instance)
+{
+    volatile uint16_t fres=0;
+    
+    fres  = smpsTimer_Disable(instance);
+    fres |= smpsTimer_Reset(instance);
+    fres |= smpsTimer_PowerOff(instance);
+    
+    return(fres);
+}
 
 // EOF

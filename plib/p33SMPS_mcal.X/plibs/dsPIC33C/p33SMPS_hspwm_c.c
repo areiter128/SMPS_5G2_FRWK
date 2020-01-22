@@ -52,7 +52,7 @@
  * the bias power to on-chip peripheral blocks. This routine enables the bias power to the high-
  * resolution PWM module.
  * ***********************************************************************************************/
-inline volatile uint16_t hspwm_power_enable(void) {
+volatile uint16_t smpsHSPWM_PowerUp(void) {
 // enable power to peripheral
 
     #ifdef PMDCON
@@ -81,7 +81,7 @@ inline volatile uint16_t hspwm_power_enable(void) {
  * the bias power to on-chip peripheral blocks. This routine disables the bias power to the high-
  * resolution PWM module.
  * ***********************************************************************************************/
-inline volatile uint16_t hspwm_power_disable(void) {
+volatile uint16_t smpsHSPWM_PowerDown(void) {
 // disable power to peripheral
     
     #ifdef PMDCON
@@ -121,7 +121,7 @@ volatile uint16_t hspwm_init_pwm_module ( HSPWM_C_MODULE_CONFIG_t pwm_config ) {
     volatile uint32_t *regptr32;
 
     // Ensure power to PWM module is ON
-    if (!hspwm_power_enable()) return(0);
+    if (!smpsHSPWM_PowerUp()) return(0);
     
     // write register configuration
     regptr16 = (volatile uint16_t*) &PCLKCON; // Get target address
@@ -360,7 +360,7 @@ volatile uint16_t hspwm_init_pwm_generator ( uint16_t instance, HSPWM_C_GENERATO
  * needs to be enabled by using the function call "hspwm_enable_pwm(instance)".
  * ***********************************************************************************************/
 
-inline volatile uint16_t hspwm_init_independent_pwm(
+volatile uint16_t hspwm_init_independent_pwm(
             uint16_t instance, 
             PCLKCON_t regPCLK, 
             PGxCON_t regPGxCON, 
@@ -426,7 +426,7 @@ inline volatile uint16_t hspwm_init_independent_pwm(
  * duty cycle/on-time and phase shift.
  * ***********************************************************************************************/
 
-inline volatile uint16_t hspwm_init_pwm_timing(uint16_t instance, uint16_t regPGxPER, uint16_t regPGxDC, uint16_t regPGxPHASE)
+volatile uint16_t hspwm_init_pwm_timing(uint16_t instance, uint16_t regPGxPER, uint16_t regPGxDC, uint16_t regPGxPHASE)
 {
     
     volatile uint16_t fres=1;
@@ -478,7 +478,7 @@ inline volatile uint16_t hspwm_init_pwm_timing(uint16_t instance, uint16_t regPG
  * specified by parameter 'instance'.
  * ***********************************************************************************************/
 
-inline volatile uint16_t hspwm_set_duty_cycle(uint16_t instance, uint16_t regPGxDC, uint16_t regPGxDCA)
+volatile uint16_t hspwm_set_duty_cycle(uint16_t instance, uint16_t regPGxDC, uint16_t regPGxDCA)
 {
     volatile uint16_t fres=0;
     volatile uint16_t *regptr16;
@@ -519,7 +519,7 @@ inline volatile uint16_t hspwm_set_duty_cycle(uint16_t instance, uint16_t regPGx
  * generator. This waiting period is timeout protected.
  * ***********************************************************************************************/
 
-inline volatile uint16_t hspwm_enable_pwm(uint16_t instance, bool wait_for_hres)
+volatile uint16_t smpsHSPWM_Enable(volatile uint16_t instance, volatile bool wait_for_hres)
 {
     volatile uint16_t fres = 1;
     volatile uint16_t *regptr16;
@@ -571,7 +571,7 @@ inline volatile uint16_t hspwm_enable_pwm(uint16_t instance, bool wait_for_hres)
  * This function disables a PWM generator defined by parameter INSTANCE.
  * ***********************************************************************************************/
 
-inline volatile uint16_t hspwm_disable_pwm(uint16_t instance)
+volatile uint16_t smpsHSPWM_Disable(volatile uint16_t instance)
 {
     volatile uint16_t fres=1;
     volatile uint16_t *regptr16;
@@ -606,7 +606,7 @@ inline volatile uint16_t hspwm_disable_pwm(uint16_t instance)
  * are forced to a permanent pin state defined by register bits PGxIOCONL->OVRDAT.
  * ***********************************************************************************************/
 
-inline volatile uint16_t hspwm_ovr_hold(uint16_t instance)
+volatile uint16_t smpsHSPWM_OVR_Hold(volatile uint16_t instance)
 {
     volatile uint16_t fres=1;
     volatile uint16_t *regptr16;
@@ -640,7 +640,7 @@ inline volatile uint16_t hspwm_ovr_hold(uint16_t instance)
  * parameter 'instance' by releasing them from override conditions.
  * ***********************************************************************************************/
 
-inline volatile uint16_t hspwm_ovr_release(uint16_t instance)
+volatile uint16_t smpsHSPWM_OVR_Release(volatile uint16_t instance)
 {
     volatile uint16_t fres=1;
     volatile uint16_t *regptr16;
@@ -674,7 +674,7 @@ inline volatile uint16_t hspwm_ovr_release(uint16_t instance)
  * parameter 'instance' by releasing them from override conditions.
  * ***********************************************************************************************/
 
-inline volatile uint16_t hspwm_ovr_release_high_side(uint16_t instance)
+volatile uint16_t smpsHSPWM_OVR_ReleaseHighSide(volatile uint16_t instance)
 {
     volatile uint16_t fres=1;
     volatile uint16_t *regptr16;
@@ -708,7 +708,7 @@ inline volatile uint16_t hspwm_ovr_release_high_side(uint16_t instance)
  * parameter 'instance' by releasing them from override conditions.
  * ***********************************************************************************************/
 
-inline volatile uint16_t hspwm_ovr_release_low_side(uint16_t instance)
+volatile uint16_t smpsHSPWM_OVR_ReleaseLowSide(volatile uint16_t instance)
 {
     volatile uint16_t fres=1;
     volatile uint16_t *regptr16;
@@ -743,7 +743,7 @@ inline volatile uint16_t hspwm_ovr_release_low_side(uint16_t instance)
  * can be controlled by port latch (LATx), port (PORTx) and i/o direction registers (TRIS).
  * ***********************************************************************************************/
 
-inline volatile uint16_t hspwm_set_gpio_high_side(uint16_t instance)
+volatile uint16_t smpsHSPWM_SetGPIO_HighSide(volatile uint16_t instance)
 {
     volatile uint16_t fres=1;
     volatile uint16_t *regptr16;
@@ -778,7 +778,7 @@ inline volatile uint16_t hspwm_set_gpio_high_side(uint16_t instance)
  * and i/o direction registers (TRIS), will have no effect on the output pin.
  * ***********************************************************************************************/
      
-inline volatile uint16_t hspwm_reset_gpio_high_side(uint16_t instance)
+volatile uint16_t smpsHSPWM_ResetGPIO_HighSide(volatile uint16_t instance)
 {
     volatile uint16_t fres=1;
     volatile uint16_t *regptr16;
@@ -813,7 +813,7 @@ inline volatile uint16_t hspwm_reset_gpio_high_side(uint16_t instance)
  * can be controlled by port latch (LATx), port (PORTx) and i/o direction registers (TRIS).
  * ***********************************************************************************************/
 
-inline volatile uint16_t hspwm_set_gpio_low_side(uint16_t instance)
+volatile uint16_t smpsHSPWM_SetGPIO_LowSide(volatile uint16_t instance)
 {
     volatile uint16_t fres=1;
     volatile uint16_t *regptr16;
@@ -848,7 +848,7 @@ inline volatile uint16_t hspwm_set_gpio_low_side(uint16_t instance)
  * and i/o direction registers (TRIS), will have no effect on the output pin.
  * ***********************************************************************************************/
 
-inline volatile uint16_t hspwm_reset_gpio_low_side(uint16_t instance)
+volatile uint16_t smpsHSPWM_ResetGPIO_LowSide(volatile uint16_t instance)
 {
     volatile uint16_t fres=1;
     volatile uint16_t *regptr16;

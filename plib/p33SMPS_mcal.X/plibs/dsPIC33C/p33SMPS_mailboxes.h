@@ -81,7 +81,7 @@
 
 #endif
 
-extern volatile uint16_t mbx_reset(void);
+extern volatile uint16_t smpsMBX_ResetAll(void);
 
 #endif	/* __MCAL_P33_SMPS_GPIO_H__ */
 

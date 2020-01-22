@@ -48,7 +48,7 @@
  * ************************************************************************************************/
 volatile OSCILLATOR_SYSTEM_FREQUENCIES_t system_frequencies;
 
-/*!init_FRC_Defaults(OSCCON_xOSC_e osc_type)
+/*!smpsOSC_FRC_DefaultInitialize()
  * ************************************************************************************************
  * Summary:
  * Initializes the major oscillator and the PLL module step by step by using clock switching
@@ -81,7 +81,7 @@ volatile OSCILLATOR_SYSTEM_FREQUENCIES_t system_frequencies;
  * registers of the configuration bits may be required
  * ************************************************************************************************/
 
-inline volatile uint16_t init_FRCCLK_Defaults(CPU_SPEED_DEFAULTS_e cpu_speed)
+volatile uint16_t smpsOSC_FRC_DefaultInitialize(volatile CPU_SPEED_DEFAULTS_e cpu_speed)
 {
     volatile int16_t fres = 0;
     volatile OSC_CONFIG_t osc;
@@ -125,13 +125,13 @@ inline volatile uint16_t init_FRCCLK_Defaults(CPU_SPEED_DEFAULTS_e cpu_speed)
     osc.N2 = PLLDIV_POST2DIV_N2N3_2;
     osc.N3 = PLLDIV_POST2DIV_N2N3_1; 
     
-    fres = init_FOSC(osc);
+    fres = smpsOSC_Initialize(osc);
 
     return(fres);
 }
 
 
-/*!init_FRCOSC(OSC_CONFIG_t osc_config)
+/*!smpsOSC_FRC_Initialize()
  * ************************************************************************************************
  * Summary:
  * Initializes the internal RC oscillator divider and tuning register
@@ -159,7 +159,7 @@ inline volatile uint16_t init_FRCCLK_Defaults(CPU_SPEED_DEFAULTS_e cpu_speed)
  * If a oscillator switch-over is performed, additional settings in the _FOSCSEL and _FOSC
  * registers of the configuration bits may be required
  * ************************************************************************************************/
-inline volatile uint16_t init_FRCOSC(CLKDIV_FRCDIVN_e frc_div, OSCTUN_TUN_e frc_tune)
+volatile uint16_t smpsOSC_FRC_Initialize(volatile CLKDIV_FRCDIVN_e frc_div, volatile OSCTUN_TUN_e frc_tune)
 {
 #if defined (__P33SMPS_CH_MSTR__) || defined (__P33SMPS_CK__)
 
@@ -187,7 +187,7 @@ inline volatile uint16_t init_FRCOSC(CLKDIV_FRCDIVN_e frc_div, OSCTUN_TUN_e frc_
     
 }
 
-/*!init_FOSC(OSC_CONFIG_t osc_config)
+/*!smpsOSC_Initialize()
  * ************************************************************************************************
  * Summary:
  * Initializes the major oscillator and the PLL module step by step by using clock switching
@@ -217,7 +217,7 @@ inline volatile uint16_t init_FRCOSC(CLKDIV_FRCDIVN_e frc_div, OSCTUN_TUN_e frc_
  * registers of the configuration bits may be required
  * ************************************************************************************************/
 
-inline volatile uint16_t init_FOSC(OSC_CONFIG_t osc_config)
+volatile uint16_t smpsOSC_Initialize(volatile OSC_CONFIG_t osc_config)
 {
 
 uint16_t _n=0, err=0;
@@ -301,7 +301,7 @@ uint16_t _n=0, err=0;
 
 }
 
-/*!init_AUXCLK(AUXOSC_CONFIG_t aux_clock_config)
+/*!smpsOSC_AUXCLK_Initialize()
  * ************************************************************************************************
  * Summary:
  * Initializes the auxiliary clock and its PLL module step by step 
@@ -326,7 +326,7 @@ uint16_t _n=0, err=0;
  *
  * ************************************************************************************************/
 
-inline volatile uint16_t init_AUXCLK(AUXOSC_CONFIG_t aux_clock_config)
+volatile uint16_t smpsOSC_AUXCLK_Initialize(volatile AUXOSC_CONFIG_t aux_clock_config)
 {
     
 	#if defined (__P33SMPS_CH__) || defined (__P33SMPS_CK__)
@@ -359,7 +359,7 @@ inline volatile uint16_t init_AUXCLK(AUXOSC_CONFIG_t aux_clock_config)
     
 }
  
-/*!init_AUXCLK_Defaults(AUXOSC_CONFIG_t aux_clock_config)
+/*!smpsOSC_AUXCLK_DefaultInitialize()
  * ************************************************************************************************
  * Summary:
  * Initializes the auxiliary clock and its PLL module step by step 
@@ -384,7 +384,7 @@ inline volatile uint16_t init_AUXCLK(AUXOSC_CONFIG_t aux_clock_config)
  *
  * ************************************************************************************************/
 
- inline volatile uint16_t init_AUXCLK_Defaults(AUX_PLL_DEFAULTS_e afpllo_frequency)
+ volatile uint16_t smpsOSC_AUXCLK_DefaultInitialize(volatile AUX_PLL_DEFAULTS_e afpllo_frequency)
  {
     volatile uint16_t fres = 1;
     volatile AUXOSC_CONFIG_t aux_clock_config;
@@ -411,13 +411,13 @@ inline volatile uint16_t init_AUXCLK(AUXOSC_CONFIG_t aux_clock_config)
     aux_clock_config.APLLEN = ACLKCON_APLLEN_ENABLED;
     
     // Call auxiliary PLL configuration to apply new settings
-    fres &= init_AUXCLK(aux_clock_config);
+    fres &= smpsOSC_AUXCLK_Initialize(aux_clock_config);
     
     return(fres);
  }
 
 
-/*!osc_get_frequencies()
+/*!smpsOSC_GetFrequencies()
  * ************************************************************************************************
  * Summary:
  * This routine reads all oscillator related SFRs recalculating the various frequencies
@@ -448,7 +448,7 @@ inline volatile uint16_t init_AUXCLK(AUXOSC_CONFIG_t aux_clock_config)
  * clock settings have been modified. 
  *
  * ************************************************************************************************/
-volatile uint16_t osc_get_frequencies(uint32_t pri_osc_frequency) {
+volatile uint16_t smpsOSC_GetFrequencies(volatile uint32_t pri_osc_frequency) {
     
     volatile int32_t freq=0;
     volatile uint16_t vbuf=0;
@@ -475,12 +475,14 @@ volatile uint16_t osc_get_frequencies(uint32_t pri_osc_frequency) {
         
         freq = (volatile int32_t)OSC_FRC_FREQ;   // Oscillator frequency is 8 MHz
         
+        #if defined (__P33SMPS_CK__) || defined (__P33SMPS_CH_MSTR__)
         // FRC tuning register does not affect Backup FRC clock
         if(otype != OSCCON_xOSC_BFRC) {
             freq += OSC_TUN_STEP_FREQUENCY * (volatile int32_t)(OSCTUNbits.TUN); // Add oscillator tuning value (is singed)
             system_frequencies.frc = freq;    // Copy updated fast RC oscillator frequency after tuning
         }
-
+        #endif
+        
         // Including FRC divider requires the FRCDIV oscillator to be selected
         if (otype == OSCCON_xOSC_FRCDIVN) {        // If oscillator is using internal divider...
             vbuf = (CLKDIVbits.FRCDIV & 0x0003);    // Copy divider SFR bits

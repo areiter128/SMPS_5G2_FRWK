@@ -23,17 +23,15 @@
  * ****************************************************************************
  * File:   p33SMPS_devices.h
  * Author: M91406
- * Comments: Additional defines to identify the selected device to simplify device switch selections 
- * Revision history: 
- *  06/28/17    Initial release covering YGAR, UEAA, UEAG, TLAL and TLAH
- *  02/26/17    added TLAY devices
- *  08/29/17    added WACS
+ * Comments: 
+ * Additional defines to identify the selected device to simplify compile  
+ * switches making them more universal
  ******************************************************************************/
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef _P33_SMPS_DEVICE_DEFINITION_H_
-#define	_P33_SMPS_DEVICE_DEFINITION_H_
+#ifndef _MCAL_P33_SMPS_DEVICE_DEFINITION_H_
+#define	_MCAL_P33_SMPS_DEVICE_DEFINITION_H_
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
@@ -322,5 +320,5 @@
 
 
 
-#endif	/* _P33_SMPS_DEVICE_DEFINITION_H_ */
+#endif	/* _MCAL_P33_SMPS_DEVICE_DEFINITION_H_ */
 

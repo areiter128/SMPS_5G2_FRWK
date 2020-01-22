@@ -21,8 +21,8 @@
  *
  * ***********************************************************************************************/
 
-#ifndef _P33SMPS_HSADC_H_
-#define _P33SMPS_HSADC_H_
+#ifndef MCAL_P33SMPS_HSADC_H
+#define MCAL_P33SMPS_HSADC_H
 
 #include <stdint.h>
 #include <math.h>
@@ -104,6 +104,9 @@
         #define ADC_ANINPUT_COUNT       16                  // Number of analog inputs
         #define ADC_SHARED_CORE_INDEX   (ADC_CORE_COUNT - 1)    // Arteficially assigned index for shared ADC core
 
+        #define ADC_ADCMP_COUNT         4 // Number of ADC Digital Comparators
+        #define ADC_ADFL_COUNT          4 // Number of ADC Digital Filters
+
         #define REG_ADC_CHANNEL_L_MSK   0b1111111111111111
         #define REG_ADC_CHANNEL_H_MSK   0b0000000000000000
     
@@ -112,6 +115,9 @@
         #define ADC_CORE_COUNT          3					// Number of ADC Cores available
         #define ADC_ANINPUT_COUNT       18                  // Number of analog inputs
         #define ADC_SHARED_CORE_INDEX   (ADC_CORE_COUNT - 1)    // Arteficially assigned index for shared ADC core
+
+        #define ADC_ADCMP_COUNT         4 // Number of ADC Digital Comparators
+        #define ADC_ADFL_COUNT          4 // Number of ADC Digital Filters
 
         #define REG_ADC_CHANNEL_L_MSK   0b1111111111111111
         #define REG_ADC_CHANNEL_H_MSK   0b0000000000000011
@@ -276,11 +282,12 @@
     #define DEVICE_DEFAULT_AVDD 3.300 // if device VDD is not defined in this project, define it for standard value of 3.3V
 #endif
 
-#define ADC_VREF        DEVICE_DEFAULT_AVDD     // ADC reference voltage in [V]
-#define ADC_RES_BIT     12.0    // ADC resolution in integer
-#define ADC_RES         (uint16_t)(pow(2, ADC_RES_BIT)-1)    // ADC resolution in integer
-#define ADC_SCALER      (float)(((float)(ADC_RES))/((float)(ADC_VREF))) // ADC Scaling in ticks/V
-
+#define ADC_VREF            DEVICE_DEFAULT_AVDD     // ADC reference voltage in [V]
+#define ADC_RES_BIT         12.0    // ADC resolution in integer
+#define ADC_RES             (uint16_t)(pow(2, ADC_RES_BIT)-1)    // ADC resolution in integer
+#define ADC_SCALER          (float)(((float)(ADC_RES))/((float)(ADC_VREF))) // ADC Scaling in ticks/V
+#define ADC_GRANULARITY     (float)(ADC_REF / pow(2.0, ADC_RES)) // ADC granularity in [V/tick]
+    
 #define ADC_ANx_INTERRUPT_ENABLE        1       // Bit setting for enabled interrupts of a dedicated analog input
 #define ADC_ANx_INTERRUPT_DISABLE       0       // Bit setting for disabled interrupts of a dedicated analog input
 
@@ -2047,36 +2054,36 @@ typedef union {
     #define REG_ADCON4H_VALID_DATA_WRITE_MSK    0b0000000011111111	// Bit mask used to set unimplemented bits to zero
     #define REG_ADCON4H_VALID_DATA_READ_MSK     0b0000000011111111	// Bit mask used to set unimplemented bits to zero
 
-    #define REG_SYNCTRGSHR_SYNC_TO_SOURCE   0b0100000000000000      // Shared Core synchronized to source clock
-    #define REG_SYNCTRGSHR_INDEPENDENT      0b0000000000000000      // Shared Core not synchronized to source clock
+    #define REG_SYNCTRGSHR_SYNC_TO_SOURCE       0b0100000000000000  // Shared Core synchronized to source clock
+    #define REG_SYNCTRGSHR_INDEPENDENT          0b0000000000000000  // Shared Core not synchronized to source clock
 
     #if (ADC_CORE_COUNT > 7)
-        #define REG_SYNCTRG6_SYNC_TO_SOURCE     0b0100000000000000      // Dedicated Core #6 synchronized to source clock
-        #define REG_SYNCTRG6_INDEPENDENT        0b0000000000000000      // Dedicated Core #6 not synchronized to source clock
+        #define REG_SYNCTRG6_SYNC_TO_SOURCE     0b0100000000000000  // Dedicated Core #6 synchronized to source clock
+        #define REG_SYNCTRG6_INDEPENDENT        0b0000000000000000  // Dedicated Core #6 not synchronized to source clock
     #endif
     #if (ADC_CORE_COUNT > 6)
-        #define REG_SYNCTRG5_SYNC_TO_SOURCE     0b0010000000000000      // Dedicated Core #5 synchronized to source clock
-        #define REG_SYNCTRG5_INDEPENDENT        0b0000000000000000      // Dedicated Core #5 not synchronized to source clock
+        #define REG_SYNCTRG5_SYNC_TO_SOURCE     0b0010000000000000  // Dedicated Core #5 synchronized to source clock
+        #define REG_SYNCTRG5_INDEPENDENT        0b0000000000000000  // Dedicated Core #5 not synchronized to source clock
     #endif
     #if (ADC_CORE_COUNT > 5)
-        #define REG_SYNCTRG4_SYNC_TO_SOURCE     0b0001000000000000      // Dedicated Core #4 synchronized to source clock
-        #define REG_SYNCTRG4_INDEPENDENT        0b0000000000000000      // Dedicated Core #4 not synchronized to source clock
+        #define REG_SYNCTRG4_SYNC_TO_SOURCE     0b0001000000000000  // Dedicated Core #4 synchronized to source clock
+        #define REG_SYNCTRG4_INDEPENDENT        0b0000000000000000  // Dedicated Core #4 not synchronized to source clock
     #endif
     #if (ADC_CORE_COUNT > 4)
-        #define REG_SYNCTRG3_SYNC_TO_SOURCE     0b0000100000000000      // Dedicated Core #3 synchronized to source clock
-        #define REG_SYNCTRG3_INDEPENDENT        0b0000000000000000      // Dedicated Core #3 not synchronized to source clock
+        #define REG_SYNCTRG3_SYNC_TO_SOURCE     0b0000100000000000  // Dedicated Core #3 synchronized to source clock
+        #define REG_SYNCTRG3_INDEPENDENT        0b0000000000000000  // Dedicated Core #3 not synchronized to source clock
     #endif
     #if (ADC_CORE_COUNT > 3)
-        #define REG_SYNCTRG2_SYNC_TO_SOURCE     0b0000010000000000      // Dedicated Core #2 synchronized to source clock
-        #define REG_SYNCTRG2_INDEPENDENT        0b0000000000000000      // Dedicated Core #2 not synchronized to source clock
+        #define REG_SYNCTRG2_SYNC_TO_SOURCE     0b0000010000000000  // Dedicated Core #2 synchronized to source clock
+        #define REG_SYNCTRG2_INDEPENDENT        0b0000000000000000  // Dedicated Core #2 not synchronized to source clock
     #endif
     #if (ADC_CORE_COUNT > 2)
-        #define REG_SYNCTRG1_SYNC_TO_SOURCE     0b0000001000000000      // Dedicated Core #1 synchronized to source clock
-        #define REG_SYNCTRG1_INDEPENDENT        0b0000000000000000      // Dedicated Core #1 not synchronized to source clock
+        #define REG_SYNCTRG1_SYNC_TO_SOURCE     0b0000001000000000  // Dedicated Core #1 synchronized to source clock
+        #define REG_SYNCTRG1_INDEPENDENT        0b0000000000000000  // Dedicated Core #1 not synchronized to source clock
     #endif
     #if (ADC_CORE_COUNT > 1)
-        #define REG_SYNCTRG0_SYNC_TO_SOURCE     0b0000000100000000      // Dedicated Core #0 synchronized to source clock
-        #define REG_SYNCTRG0_INDEPENDENT        0b0000000000000000      // Dedicated Core #0 not synchronized to source clock
+        #define REG_SYNCTRG0_SYNC_TO_SOURCE     0b0000000100000000  // Dedicated Core #0 synchronized to source clock
+        #define REG_SYNCTRG0_INDEPENDENT        0b0000000000000000  // Dedicated Core #0 not synchronized to source clock
     #endif
 
     typedef enum {
@@ -2085,32 +2092,32 @@ typedef union {
     } ADCON4_SYNCTRGx_e; // ADC core clock synchronization
 
     #if (ADC_CORE_COUNT > 7)
-        #define REG_SAMC6EN_ENABLED            0b0000100000000000      // Core #6 synchronized to source clock
-        #define REG_SAMC6EN_DISABLED           0b0000000000000000      // Core #6 not synchronized to source clock
-    #endif
-    #if (ADC_CORE_COUNT > 6)
-        #define REG_SAMC5EN_ENABLED            0b0000100000000000      // Core #5 synchronized to source clock
-        #define REG_SAMC5EN_DISABLED           0b0000000000000000      // Core #5 not synchronized to source clock
-    #endif
-    #if (ADC_CORE_COUNT > 5)
-        #define REG_SAMC4EN_ENABLED            0b0000100000000000      // Core #4 synchronized to source clock
-        #define REG_SAMC4EN_DISABLED           0b0000000000000000      // Core #4 not synchronized to source clock
-    #endif
-    #if (ADC_CORE_COUNT > 4)
-        #define REG_SAMC3EN_ENABLED            0b0000100000000000      // Core #3 synchronized to source clock
-        #define REG_SAMC3EN_DISABLED           0b0000000000000000      // Core #3 not synchronized to source clock
-    #endif
-    #if (ADC_CORE_COUNT > 3)
-        #define REG_SAMC2EN_ENABLED            0b0000010000000000      // Core #2 synchronized to source clock
-        #define REG_SAMC2EN_DISABLED           0b0000000000000000      // Core #2 not synchronized to source clock
-    #endif
-    #if (ADC_CORE_COUNT > 2)
-        #define REG_SAMC1EN_ENABLED            0b0000001000000000      // Core #1 synchronized to source clock
-        #define REG_SAMC1EN_DISABLED           0b0000000000000000      // Core #1 not synchronized to source clock
-    #endif
-    #if (ADC_CORE_COUNT > 1)
-        #define REG_SAMC0EN_ENABLED            0b0000000100000000      // Core #0 synchronized to source clock
-        #define REG_SAMC0EN_DISABLED           0b0000000000000000      // Core #0 not synchronized to source clock
+        #define REG_SAMC6EN_ENABLED             0b0000100000000000  // Core #6 synchronized to source clock
+        #define REG_SAMC6EN_DISABLED            0b0000000000000000  // Core #6 not synchronized to source clock
+    #endif 
+    #if (ADC_CORE_COUNT > 6) 
+        #define REG_SAMC5EN_ENABLED             0b0000100000000000  // Core #5 synchronized to source clock
+        #define REG_SAMC5EN_DISABLED            0b0000000000000000  // Core #5 not synchronized to source clock
+    #endif 
+    #if (ADC_CORE_COUNT > 5) 
+        #define REG_SAMC4EN_ENABLED             0b0000100000000000  // Core #4 synchronized to source clock
+        #define REG_SAMC4EN_DISABLED            0b0000000000000000  // Core #4 not synchronized to source clock
+    #endif 
+    #if (ADC_CORE_COUNT > 4) 
+        #define REG_SAMC3EN_ENABLED             0b0000100000000000  // Core #3 synchronized to source clock
+        #define REG_SAMC3EN_DISABLED            0b0000000000000000  // Core #3 not synchronized to source clock
+    #endif 
+    #if (ADC_CORE_COUNT > 3) 
+        #define REG_SAMC2EN_ENABLED             0b0000010000000000  // Core #2 synchronized to source clock
+        #define REG_SAMC2EN_DISABLED            0b0000000000000000  // Core #2 not synchronized to source clock
+    #endif 
+    #if (ADC_CORE_COUNT > 2) 
+        #define REG_SAMC1EN_ENABLED             0b0000001000000000  // Core #1 synchronized to source clock
+        #define REG_SAMC1EN_DISABLED            0b0000000000000000  // Core #1 not synchronized to source clock
+    #endif 
+    #if (ADC_CORE_COUNT > 1) 
+        #define REG_SAMC0EN_ENABLED             0b0000000100000000  // Core #0 synchronized to source clock
+        #define REG_SAMC0EN_DISABLED            0b0000000000000000  // Core #0 not synchronized to source clock
     #endif
 
     typedef enum {
@@ -2353,7 +2360,7 @@ typedef union {
     // this dummy-memory space will fill the gap when a device doesn't have dedicated ADc cores
     // and therefore related registers are not implemented
     typedef struct {
-        volatile unsigned : 32; // (reserved)
+        volatile uint32_t : 32; // (reserved)
     } __attribute__((packed)) ADCON4_t;
 
 #endif // end of ADCON4 defines, whcih are only available if dedicated ADC cores are present
@@ -4563,7 +4570,9 @@ typedef union {
 // ==============================================================================================
  typedef struct {
     volatile ADCOREx_SAMC_e samc;       // Shared/Dedicated ADC Core Conversion Delay Selection bits
+    #if ADC_CORE_COUNT > 1
     volatile ADCON4_SAMCxEN_e samc_en;  // Flag indicating if sample delay should be enabled/disabled
+    #endif
     volatile ADCOREx_EISEL_e eisel;     // ADC Core x Early Interrupt Time Selection bits
     volatile ADCOREx_ADCS_e adcs;       // Shared ADC Core Input Clock Divider bits
     volatile ADCOREx_RES_e res;         // ADC Core x Resolution Selection bits
@@ -4668,28 +4677,27 @@ typedef struct {
 // ==============================================================================================
 // Global Function Prototypes
 // ==============================================================================================
-extern volatile uint16_t hsadc_adc_module_initialize( volatile HSADC_ADMODCFG_t adc_cfg );
-extern volatile uint16_t hsadc_adc_input_initialize( volatile HSADC_ADCANCFG_t adin_cfg );
+extern volatile uint16_t smpsADC_Module_Iniitalize( volatile HSADC_ADMODCFG_t adc_cfg );
+extern volatile uint16_t smpsADC_ADInput_Initialize( volatile HSADC_ADCANCFG_t adin_cfg );
 
 
-extern volatile uint16_t hsadc_module_power_up(void);
-extern volatile uint16_t hsadc_module_power_down(void);
-extern volatile uint16_t hsadc_module_enable(void);
-extern volatile uint16_t hsadc_module_disable(void);
-extern volatile uint16_t hsadc_module_reset(void);
+extern volatile uint16_t smpsADC_Module_PowerUp(void);
+extern volatile uint16_t smpsADC_Module_PowerDown(void);
+extern volatile uint16_t smpsADC_Module_Enable(void);
+extern volatile uint16_t smpsADC_Module_Disable(void);
+extern volatile uint16_t smpsADC_Module_Reset(void);
 
-extern volatile uint16_t hsadc_adc_core_power_on(volatile uint16_t index);
-extern volatile uint16_t hsadc_adc_cores_check_ready(void);
+extern volatile uint16_t smpsADC_Core_PowerUp(volatile uint16_t index);
+extern volatile uint16_t smpsADC_Core_CheckReady(void);
 
+extern volatile uint16_t smpsADC_ADInput_SetMode(volatile HSADC_ADCANCFG_t adin_cfg);
+extern volatile uint16_t smpsADC_ADInput_SetTriggerSource(volatile HSADC_ADCANCFG_t adin_cfg);
+extern volatile uint16_t smpsADC_ADInput_SetTriggerMode(volatile HSADC_ADCANCFG_t adin_cfg);
+extern volatile uint16_t smpsADC_ADInput_SetInterrupt(volatile HSADC_ADCANCFG_t adin_cfg);
 
-extern volatile uint16_t hsadc_set_adc_input_mode(volatile HSADC_ADCANCFG_t adin_cfg);
-extern volatile uint16_t hsadc_set_adc_input_trigger_source(volatile HSADC_ADCANCFG_t adin_cfg);
-extern volatile uint16_t hsadc_set_adc_input_trigger_mode(volatile HSADC_ADCANCFG_t adin_cfg);
-extern volatile uint16_t hsadc_set_adc_input_interrupt(volatile HSADC_ADCANCFG_t adin_cfg);
-
-extern volatile uint16_t hsadc_init_adc_comp(volatile uint16_t index, volatile HSADC_ADCMP_CONFIG_t adcmp_cfg);
-extern volatile uint16_t hsadc_init_adc_filter(volatile uint16_t index, volatile HSADC_ADFLT_CONFIG_t adflt_cfg);
+extern volatile uint16_t smpsADC_ADComp_Initialize(volatile uint16_t index, volatile HSADC_ADCMP_CONFIG_t adcmp_cfg);
+extern volatile uint16_t smpsADC_ADFilter_Initialize(volatile uint16_t index, volatile HSADC_ADFLT_CONFIG_t adflt_cfg);
 
 
 #endif /* dsPIC33CH/CK only */
-#endif   /* end of _P33SMPS_HSADC_H_ */
+#endif /* end of MCAL_P33SMPS_HSADC_H */

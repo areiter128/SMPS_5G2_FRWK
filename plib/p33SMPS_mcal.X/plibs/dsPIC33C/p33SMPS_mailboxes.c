@@ -31,7 +31,31 @@
 
 #include "p33SMPS_mailboxes.h"
 
-inline volatile uint16_t mbx_reset(void) {
+/*!smpsMBX_Reset
+ * ***************************************************************************
+ * Summary: Resets all mailbox registers in dual core devices
+ * 
+ * Parameters:
+ *     (none)
+ * 
+ * Returns:
+ *      uint16_t:   0 = failure
+ *                  1 = success
+ * 
+ * Description:
+ * This function clears all mailbox registers in Dual Core devices.
+ * 
+ * Please Note:
+ * Mailbox registers are assigned to a certain core at compile time using 
+ * FUSES (configuration bits). Only the assigned core has WRITE access while 
+ * the register appears as "READ ONLY" to the other.
+ * 
+ * As access to these registers may be restricted dependent on this 
+ * assignment, only the registers which have WRITE access will be cleared.
+ * 
+ * ***************************************************************************/
+
+volatile uint16_t smpsMBX_ResetAll(void) {
 
     #if defined (__P33SMPS_CH__)
 
@@ -58,3 +82,5 @@ inline volatile uint16_t mbx_reset(void) {
     
     return(1);
 }
+
+

@@ -42,9 +42,22 @@
 #define PWRSAV_SLEEP	asm volatile ("PWRSAV #0\n")
 #define CPU_RESET		asm volatile ("RESET\n")
 
-//#ifdef (CTXTSTAT)
-//  #define ALTWREG_SWAP(x)    asm volatile ( "PUSH.W W0 \n CTXTSWP #" + x + "POP.W W0 \n")
-//#endif
+/*!ALTWREG_SWAP()
+ * ********************************************************************************
+ * Summary: Swaps the current working register set
+ * 
+ * Parameters:
+ *      uint16_t x: New Working Register Set (Target)
+ * 
+ * Returns: 
+ *      uint16_t:   Previous Working Register Set (Origin)
+ * 
+ * ********************************************************************************/
+#define ALTWREG_SWAP(NEW_WREG_SET) __extension__ ({ \
+    volatile uint16_t __new_wreg_set = (NEW_WREG_SET), __old_wreg_set; \
+    __asm__ ("ctxtswp %1;\n\t" : "=d" (__old_wreg_set) : "d" (__new_wreg_set)); __old_wreg_set; \
+})    
+
 
 #endif  /* _APPLICATION_LAYER_DEFINES_H_ */
 

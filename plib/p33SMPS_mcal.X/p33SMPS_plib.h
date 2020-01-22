@@ -41,6 +41,7 @@
 #if defined (__P33SMPS_CH__) || defined (__P33SMPS_CK__)
 
 #include "plibs/dsPIC33C/p33SMPS_cpu_macros.h"
+#include "plibs/dsPIC33C/p33SMPS_crc.h"
 #include "plibs/dsPIC33C/p33SMPS_dsp.h"
 #include "plibs/dsPIC33C/p33SMPS_gpio.h"
 #include "plibs/dsPIC33C/p33SMPS_hsadc.h"

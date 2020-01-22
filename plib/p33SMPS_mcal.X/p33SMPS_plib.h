@@ -58,7 +58,22 @@
   #pragma message "p33SMPS_plib Warning: selected device is currently not supported by the peripheral libraries"
 #endif
 
-// peripheral library global data structures
+/*!Peripheral Library Global Data Objects
+ * ********************************************************************************
+ * The following declarations are used to make internal data objects publicly 
+ * accessible.
+ * 
+ * a) OSCILLATOR_SYSTEM_FREQUENCIES_t system_frequencies
+ * 
+ *    This data object holds all MCU-wide frequencies of main and auxiliary
+ *    oscillators, PLLs and further, timing-critical parameters which may
+ *    be used/required by other peripherals such as UART, CAN, PWM, etc.
+ *    
+ *    The parameters of this object are automatically updated when one or
+ *    more of the basic clock settings are changed.
+ * 
+ * ********************************************************************************/
+
 extern volatile OSCILLATOR_SYSTEM_FREQUENCIES_t system_frequencies;
 
 

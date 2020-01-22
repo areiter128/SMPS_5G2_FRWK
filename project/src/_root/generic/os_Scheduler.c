@@ -124,6 +124,17 @@ void __attribute__((user_init)) OS_Execute(void) {
 
     #if ((USE_TASK_EXECUTION_CLOCKOUT_PIN == 1) && (USE_DETAILED_CLOCKOUT_PATTERN == 1))
     #ifdef TS_CLOCKOUT_PIN_WR
+    TS_CLOCKOUT_PIN_WR = PINSTATE_LOW;                 // Drive debug pin high
+    #endif
+    #endif
+
+        // Capture the most recent system status to respond to changes in 
+        // user defined, system level states. (calls user-code module)
+        fres &= APPLICATION_CaptureSystemStatus();
+
+        
+    #if ((USE_TASK_EXECUTION_CLOCKOUT_PIN == 1) && (USE_DETAILED_CLOCKOUT_PATTERN == 1))
+    #ifdef TS_CLOCKOUT_PIN_WR
     TS_CLOCKOUT_PIN_WR = PINSTATE_HIGH;                 // Drive debug pin high
     #endif
     #endif
@@ -136,23 +147,13 @@ void __attribute__((user_init)) OS_Execute(void) {
         
     #if ((USE_TASK_EXECUTION_CLOCKOUT_PIN == 1) && (USE_DETAILED_CLOCKOUT_PATTERN == 1))
     #ifdef TS_CLOCKOUT_PIN_WR
-    TS_CLOCKOUT_PIN_WR = PINSTATE_LOW;                 // Drive debug pin high
-    #endif
-    #endif
-
-        // Capture the most recent system status to respond to changes in operating modes
-        fres &= APPLICATION_CaptureSystemStatus();
-
-        
-    #if ((USE_TASK_EXECUTION_CLOCKOUT_PIN == 1) && (USE_DETAILED_CLOCKOUT_PATTERN == 1))
-    #ifdef TS_CLOCKOUT_PIN_WR
     TS_CLOCKOUT_PIN_WR = PINSTATE_HIGH;                 // Drive debug pin low
     #endif
     #endif
 
     
         // Reset Watchdog Timer
-        // ToDo: Move swdt_reset(); out to taks queues
+        // ToDo: Move swdt_reset(); out to task queues
         // ToDo: Add windowed WDT option to library
         // ToDo: Add compile switch for option __DEBUG to disable watchdog in debug sessions
         //Remove: fres &= swdt_reset();

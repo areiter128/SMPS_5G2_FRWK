@@ -176,7 +176,7 @@ volatile uint16_t APPLICATION_Reset(void) {
  * scheduler to switch to the task queue task_queue_fault[]. 
  * 
  * Please note: 
- * In System Status Monitor ONLY (!!!) serves the purpose of controlling the active task manager 
+ * In-System Status Monitor ONLY (!!!) serves the purpose of controlling the active task manager 
  * task queue. Any other function, like shutting down a peripheral circuit in case of a detected
  * fault condition, needs to be covered by the fault handler user function directly.
  *  
@@ -187,7 +187,7 @@ volatile uint16_t APPLICATION_CaptureSystemStatus(void) {
     
     volatile uint16_t fres=1;
     
-    /* ToDo: Add your application wide operating mode conditions here 
+    /* ToDo: Add your application wide operating status conditions here 
 
      * Example:
      * 

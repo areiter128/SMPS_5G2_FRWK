@@ -18,9 +18,12 @@
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include <stdint.h>
+#include <stdbool.h>
+#include <stddef.h>
 
-#include "../h/_root/generic/os_Globals.h"
-
+#include "_root/generic/fdrv_FaultHandler.h"
+#include "_root/generic/fdrv_FaultObjects.h"
+#include "_root/generic/fdrv_TrapHandler.h"
 
 /*!fault_object_index
  * ***********************************************************************************************

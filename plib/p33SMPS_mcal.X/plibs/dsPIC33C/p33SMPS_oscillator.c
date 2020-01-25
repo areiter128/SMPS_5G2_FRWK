@@ -290,7 +290,6 @@ uint16_t _n=0, err=0;
 	if ((OSCCONbits.LOCK != 1) || (_n >= OSC_CLKSW_TIMEOUT)) // Error occurred? 
 	{ err = OSCERR_PLL_LCK; } // => If so, return error code
     
-
 // Return Success/Failure
     if (err == 0)
     { 
@@ -448,17 +447,17 @@ volatile uint16_t smpsOSC_AUXCLK_Initialize(volatile AUXOSC_CONFIG_t aux_clock_c
  * clock settings have been modified. 
  *
  * ************************************************************************************************/
-volatile uint16_t smpsOSC_GetFrequencies(volatile uint32_t pri_osc_frequency) {
+volatile uint16_t smpsOSC_GetFrequencies(volatile uint32_t main_osc_frequency) {
     
     volatile int32_t freq=0;
     volatile uint16_t vbuf=0;
     volatile OSCCON_xOSC_TYPE_e otype;
     
     // Copy oscillator frequency given as unsigned 32-bit integer into signed 32-bit variable
-    freq = (volatile int32_t)pri_osc_frequency;
+    freq = (volatile int32_t)main_osc_frequency;
 
     // Capture external oscillator frequency
-    if (pri_osc_frequency > 0) {
+    if (main_osc_frequency > 0) {
         system_frequencies.fpri = (volatile uint32_t)freq;
     }
     

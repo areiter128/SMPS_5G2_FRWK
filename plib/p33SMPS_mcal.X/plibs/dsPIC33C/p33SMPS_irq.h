@@ -41,13 +41,13 @@
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include <stdint.h>
+#include <stdbool.h> 
 
 #include "../p33SMPS_devices.h"
 
 
 //#if defined (__P33SMPS_EP__) || defined (__P33SMPS_CH__) || defined (__P33SMPS_CK__)
 
-// Defines for gsirq_soft_traps_initialize(...)
 #define ACCA_OVERFLOW_TRAP_ENABLED                  1
 #define ACCA_OVERFLOW_TRAP_DISABLED                 0
 #define ACCB_OVERFLOW_TRAP_ENABLED                  1
@@ -476,8 +476,12 @@ typedef union {
 
 #if defined(_VHOLD)
 #define REG_INTTREG_VALID_BIT_MSK   0b0010111111111111      // Fourth interrupt configuration register for read operations (incl. status bits)
+#define REG_INTTREG_WRITE_BIT_MSK   0b0000000000000000      // Fourth interrupt configuration register for read operations (incl. status bits)
+#define REG_INTTREG_CLEAR_BIT_MSK   0b0000000000000000      // Fourth interrupt configuration register for read operations (incl. status bits)
 #else
 #define REG_INTTREG_VALID_BIT_MSK   0b0000111111111111      // Fourth interrupt configuration register for read operations (incl. status bits)
+#define REG_INTTREG_WRITE_BIT_MSK   0b0000000000000000      // Fourth interrupt configuration register for read operations (incl. status bits)
+#define REG_INTTREG_CLEAR_BIT_MSK   0b0000000000000000      // Fourth interrupt configuration register for read operations (incl. status bits)
 #endif
         
 #define REG_INTTREG_ILR_MSK     0b0000111100000000
@@ -521,6 +525,7 @@ typedef enum {
 
 #define REG_INTTREG_VECNUM_MSK  0b0000000011111111      // Fourth interrupt configuration register for read operations (incl. status bits)
 #define REG_INTTREG_VECNUM(x)   (x & REG_INTTREG_VECNUM_MSK)
+#define REG_INTTREG_VECNUM_CLEAR  0b1111111100000000      // Fourth interrupt configuration register for read operations (incl. status bits)
 
 typedef enum {
     INTTREG_VECNUM_OSCERR = 0b00000000, // Oscillator fail trap
@@ -781,6 +786,10 @@ typedef enum {
     INTTREG_VECNUM_255 = 0b11111111, // (reserved)
 }INTTREG_VECNUM_e;
 
+#define REG_INTTREG_VHOLD_ENABLED  0b0010000000000000      // Fourth interrupt configuration register for read operations (incl. status bits)
+#define REG_INTTREG_VHOLD_DISABLED 0b0000000000000000      // Fourth interrupt configuration register for read operations (incl. status bits)
+#define REG_INTTREG_VHOLD_CLEAR    0b1101111111111111      // Fourth interrupt configuration register for read operations (incl. status bits)
+
 typedef enum {
     INTTREG_VHOLD_ENABLED = 0b1, // VECNUM<7:0> bits read current value of vector number encoding tree (i.e., highest priority pending interrupt)
     INTTREG_VHOLD_DISABLED = 0b0  // Vector number latched into VECNUM<7:0> at Interrupt Acknowledge and retained until next IACK
@@ -811,9 +820,9 @@ extern volatile uint16_t smpsIRQ_Initialize(volatile INTERRUPT_CONFIG_t intcon);
 extern volatile uint16_t smpsIRQ_GetCurrentPriority(void);
 extern volatile uint16_t smpsIRQ_GetCurrentVector(void);
 extern volatile uint16_t smpsIRQ_SoftTrapsInitialize(
-                    uint16_t accumulator_a_overflow_trap_enable, 
-                    uint16_t accumulator_b_overflow_trap_enable, 
-                    uint16_t accumulator_catastrophic_overflow_trap_enable
+                    volatile bool accumulator_a_overflow_trap_enable, 
+                    volatile bool accumulator_b_overflow_trap_enable, 
+                    volatile bool accumulator_catastrophic_overflow_trap_enable
                     );
 
 

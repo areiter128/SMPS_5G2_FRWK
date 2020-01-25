@@ -29,6 +29,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "p33SMPS_irq.h"
+
 /*!p33SMPS_irq.c
  * ************************************************************************************************
  * Summary:
@@ -150,14 +152,14 @@ volatile uint16_t smpsIRQ_GetCurrentVector(void)
  * ***********************************************************************************************/
 
 volatile uint16_t smpsIRQ_SoftTrapsInitialize(
-                    uint16_t accumulator_a_overflow_trap_enable, 
-                    uint16_t accumulator_b_overflow_trap_enable, 
-                    uint16_t accumulator_catastrophic_overflow_trap_enable)
+                    volatile bool accumulator_a_overflow_trap_enable, 
+                    volatile bool accumulator_b_overflow_trap_enable, 
+                    volatile bool accumulator_catastrophic_overflow_trap_enable)
 {
     
-    _OVATE = accumulator_a_overflow_trap_enable; // Enable Accumulator A Overflow Trap Enable bit
-    _OVBTE = accumulator_b_overflow_trap_enable; // Enable Accumulator B Overflow Trap Enable bit
-    _COVTE = accumulator_catastrophic_overflow_trap_enable; // Enable Catastrophic Overflow Trap Enable bit
+    _OVATE = (uint16_t)accumulator_a_overflow_trap_enable; // Enable Accumulator A Overflow Trap Enable bit
+    _OVBTE = (uint16_t)accumulator_b_overflow_trap_enable; // Enable Accumulator B Overflow Trap Enable bit
+    _COVTE = (uint16_t)accumulator_catastrophic_overflow_trap_enable; // Enable Catastrophic Overflow Trap Enable bit
 
     return (1);
 }

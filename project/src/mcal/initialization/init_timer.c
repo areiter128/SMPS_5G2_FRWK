@@ -16,7 +16,7 @@ volatile uint16_t OSTimer_Initialize(void) {
     tmr.bits.tgate = TGATE_DISABLED;
     tmr.bits.tsync = TSYNC_NONE;
 
-    #if defined (__P33SMPS_CH2__) || defined (__P33SMPS_CH5__)
+    #if defined (__P33SMPS_CH__) || defined (__P33SMPS_CK__)
     
     tmr.bits.tmwdis = TMWDIS_ENABLED;
     tmr.bits.tmwip = TMWIP_COMPLETE;
@@ -26,8 +26,8 @@ volatile uint16_t OSTimer_Initialize(void) {
     #endif
     
     // write configuration
-    fres &= gstmr_reset(TASK_MGR_TIMER_INDEX); 
-    fres &= gstmr_init_timer16b(TASK_MGR_TIMER_INDEX, tmr, TASK_MGR_PERIOD, TASK_MGR_ISR_PRIORITY);
+    fres &= smpsTimer_Reset(TASK_MGR_TIMER_INDEX); 
+    fres &= smpsTimer_Initialize16b(TASK_MGR_TIMER_INDEX, tmr, TASK_MGR_PERIOD, TASK_MGR_ISR_PRIORITY);
     
     return(fres);
 }
@@ -37,7 +37,7 @@ volatile uint16_t OSTimer_Start(void) {
     volatile uint16_t fres = 1;
     
     // User configuration
-    fres &= gstmr_enable(TASK_MGR_TIMER_INDEX, TASK_MGR_ISR_STATE);  // Enable Timer without interrupts
+    fres &= smpsTimer_Enable(TASK_MGR_TIMER_INDEX, TASK_MGR_ISR_STATE);  // Enable Timer without interrupts
     
     return(fres);
     

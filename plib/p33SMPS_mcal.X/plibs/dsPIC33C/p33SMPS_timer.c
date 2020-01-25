@@ -178,7 +178,8 @@ volatile uint16_t smpsTimer_PowerOff(uint16_t instance)
  * ***********************************************************************************************/
 
 
-volatile uint16_t smpsTimer_Initialize16b(uint16_t instance, TxCON_CONTROL_REGISTER_t regTCON, uint32_t period, TIMER_ISR_PRIORITY_e isr_priority)
+volatile uint16_t smpsTimer_Initialize16b(uint16_t instance, TxCON_CONTROL_REGISTER_t regTCON, 
+                    uint32_t period, TIMER_ISR_PRIORITY_e isr_priority)
 {
 
     volatile uint32_t per_buf=0;

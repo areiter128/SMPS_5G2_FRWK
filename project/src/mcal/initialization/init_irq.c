@@ -17,9 +17,10 @@ volatile uint16_t IRQ_initialize(void)
     irq_config.intcon2.value = IRQ_INTCON2_CFG; // Reset all interrupt status bits
     irq_config.intcon3.value = IRQ_INTCON3_CFG; // Reset all interrupt status bits
     irq_config.intcon4.value = IRQ_INTCON4_CFG; // Reset all interrupt status bits
+    irq_config.inttreg.value = IRQ_INTTREG_CFG; // Reset all interrupt status bits
     
-    fres = gsirq_irq_initialize(irq_config);
-    fres &= gsirq_soft_traps_initialize(0, 0, 0);
+    fres = smpsIRQ_Initialize(irq_config);
+    fres &= smpsIRQ_SoftTrapsInitialize(false, false, false);
 
     return(fres);
 }

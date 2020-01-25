@@ -176,5 +176,14 @@
                             )
 
 
+/* INTCON4 Settings */
+
+#define IRQ_INTTREG_CFG    (REG_INTTREG_ILR_0 | \
+                            REG_INTTREG_VHOLD_CLEAR | \
+                            REG_INTTREG_VECNUM_CLEAR \
+                            )
+
+
+
 #endif	/* MCAL_DEVICE_CONFIGURATION_IRQ_H */
 

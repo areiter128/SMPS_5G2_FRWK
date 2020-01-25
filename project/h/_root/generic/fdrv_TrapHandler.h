@@ -228,6 +228,18 @@ typedef union {
 
 
 typedef struct {
+    volatile uint16_t task_id; // Task ID of last executed task
+    volatile uint16_t fault_id;   // Fault ID causing a catastrophic fault event
+    volatile uint16_t op_mode; // Operating Mode ID of task manager
+} TASK_INFO_t;
+
+// =================================================================================================
+//
+//	GLOBAL DATA STRUCTURE - TRAP LOGGER OBJECT
+//
+// =================================================================================================
+
+typedef struct {
 
     volatile TRAPLOG_STATUS_t status;   // Status word of the traplog object
     volatile uint16_t reset_count;      // Counter of CPU RESET events (read/write)
@@ -236,6 +248,7 @@ typedef struct {
     volatile TRAP_FLAGS_t trap_flags;   // Complete list of trap flags (showing all trap flags)
 	volatile CPU_RCON_t rcon_reg;       // Captures the RESET CONTROL register
     volatile CPU_INTTREG_t inttreg;     // Interrupt Vector and Priority register capture
+    volatile TASK_INFO_t task_capture;  // Information of last task executed
     
 }TRAP_LOGGER_t; // Global data structure for trap event capturing
 

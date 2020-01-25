@@ -518,7 +518,7 @@ volatile uint16_t CheckCPUResetRootCause(void)
  * ***********************************************************************************************/
 inline volatile uint16_t ExecFaultHandler(volatile FAULT_OBJECT_t* fltobj)
 {
-    volatile uint16_t f_ret = 1, log_id = 0;
+    volatile uint16_t f_ret = 1;
     
     // if the fault object is not initialized, exit here
     if(fltobj == NULL) { return(1); }
@@ -526,10 +526,13 @@ inline volatile uint16_t ExecFaultHandler(volatile FAULT_OBJECT_t* fltobj)
     if(fltobj->flt_class.value & FLT_CLASS_CATASTROPHIC)
     {
         // if fault is of class CATASTROPHIC, force main loop to reset CPU
+        traplog.task_capture.op_mode = task_mgr.op_mode.value; // Log the most recent operating mode ID in the traps data structure 
+        traplog.task_capture.task_id = task_mgr.exec_task_id; // Log the most recent task ID in the traps data structure 
+        traplog.task_capture.fault_id = fltobj->id; // Log the fault object ID in the traps data structure 
+
         task_mgr.status.bits.global_fault = 1; // setting global fault bit
         task_mgr.status.bits.fault_override = true; // setting global fault override bit
         task_mgr.op_mode.value = OP_MODE_FAULT; // force main scheduler into fault mode
-        log_id = fltobj->id; // ToDo: Log the fault object ID in the traps data structure 
         run_scheduler = false; // Terminate main scheduler, enforcing a warm CPU restart
         return(f_ret); // Return success immediately, don't execute rest of function
     }

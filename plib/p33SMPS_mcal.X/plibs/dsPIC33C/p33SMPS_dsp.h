@@ -24,7 +24,7 @@
 #ifndef MCAL_P33SMPS_DSP_H
 #define MCAL_P33SMPS_DSP_H
 
-#include "../p33SMPS_devices.h"
+#include "../p33SMPS_devices.h" // DEVICES header to derive device-dependent properties
 
 #if defined (__P33SMPS_CH__) || defined (__P33SMPS_CK__)
 /*!p33SMPS_dsp.h

@@ -40,12 +40,7 @@
  * 
  * ***************************************************************************/
  
-// Device header file
-#include <xc.h>
-#include <stdint.h>
-#include <stddef.h>
-#include <stdbool.h>
-
+// Include Header Files
 #include "p33SMPS_uart.h"
 
 #define SMPS_UART_IO_TIMEOUT        5000    // wait for n while cycles before terminating poll-attempt

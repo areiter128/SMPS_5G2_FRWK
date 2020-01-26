@@ -5,7 +5,7 @@
  * Created on December 16, 2019, 3:14 PM
  */
 
-
+// Include Header Files
 #include "p33SMPS_crc.h"
 
 volatile uint16_t smpsCRC_Initialize (volatile CRC_t crc_config) {

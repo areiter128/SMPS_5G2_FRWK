@@ -30,9 +30,11 @@
 #ifndef __SPECIAL_FUNCTION_LAYER_H__
 #define	__SPECIAL_FUNCTION_LAYER_H__
 
-#include <xc.h>
-#include <stdint.h>
-#include <stdbool.h>
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
+#include <stddef.h> // include standard definition types header file
+#include <math.h> // include standard math library header file
 
 /* ***********************************************************************************************
  * PROTOTYPES

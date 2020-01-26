@@ -44,9 +44,9 @@
  * DEFAULT INCLUDES
  * ***********************************************************************************************/
 
-#include <xc.h>
-#include <stdint.h>
-#include <stdbool.h>
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
 
 #include "fdrv_FaultHandler.h"
 #include "fdrv_FaultObjects.h"

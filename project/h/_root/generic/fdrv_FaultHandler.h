@@ -17,8 +17,8 @@
 #define	_ROOT_FUNCTION_DRIVER_FAULT_HANDLER_H_
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-#include <stdint.h>
-#include <stdbool.h>
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
 
 /*!FAULT_OBJECT_STATUS_t
  * ***********************************************************************************************

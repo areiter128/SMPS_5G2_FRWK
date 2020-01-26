@@ -40,10 +40,10 @@
 #define	_MCAL_P33_SMPS_INTERRUPT_CONFIG_DEF_H_
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-#include <stdint.h>
-#include <stdbool.h> 
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
 
-#include "../p33SMPS_devices.h"
+#include "../p33SMPS_devices.h" // DEVICES header to derive device-dependent properties
 
 
 //#if defined (__P33SMPS_EP__) || defined (__P33SMPS_CH__) || defined (__P33SMPS_CK__)

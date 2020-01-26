@@ -30,6 +30,9 @@
 #ifndef MCAL_OPERATING_SYSTEM_TIMER_H_
 #define	MCAL_OPERATING_SYSTEM_TIMER_H_
 
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+
 /* ***********************************************************************************************
  * PROTOTYPES
  * ***********************************************************************************************/

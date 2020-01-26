@@ -31,9 +31,9 @@
 #ifndef ROOT_TASK_SCHEDULER_H
 #define	ROOT_TASK_SCHEDULER_H
 
-#include <xc.h>
-#include <stdint.h>
-#include <stdbool.h>
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
 
 // ===========================================================
 // task_manager_config.h holds all OS options used to configure 

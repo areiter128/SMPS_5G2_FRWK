@@ -37,13 +37,8 @@
  * 
  * ***************************************************************************/
 
-// Device header file
-#include <xc.h>
-#include <stdint.h>
-#include <stdbool.h>
-
+// Include Header Files
 #include "p33SMPS_timer.h"
-
 
 /*!p33SMPS_timer.h
  * ************************************************************************************************

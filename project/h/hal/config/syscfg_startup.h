@@ -32,8 +32,10 @@
 #define	_HARDWARE_ABSTRACTION_LAYER_SYSTEM_STARTUP_H_
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-#include <stdint.h>
-#include <math.h>
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
+#include <math.h> // include standard math library header file
+
 #include "_root/config/task_manager_config.h"
 #include "apl/config/UserTasks.h"
 

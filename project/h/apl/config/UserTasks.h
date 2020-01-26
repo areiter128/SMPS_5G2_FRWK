@@ -48,8 +48,10 @@
 #define	_APPLICATION_LAYER_TASK_FLOW_QUEUES_H_
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-#include <stdint.h>
-#include <math.h>
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
+#include <stddef.h> // include standard definition types header file
+#include <math.h> // include standard math library header file
 
 /* ***********************************************************************************************
  * INCLUDE OF HEADERS ALSO CONTAINING GLOBALLY AVAILABLE FUNCTION CALLS

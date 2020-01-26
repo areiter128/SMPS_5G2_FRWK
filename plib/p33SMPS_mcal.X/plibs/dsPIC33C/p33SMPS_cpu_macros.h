@@ -29,9 +29,10 @@
 #ifndef _APPLICATION_LAYER_DEFINES_H_
 #define _APPLICATION_LAYER_DEFINES_H_
 
-#include <stdint.h>
-#include "stdbool.h"
-#include "stddef.h"
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
+#include <stddef.h> // include standard definition types header file
 
 /* ***************************************************************************************
  *	Generic Macros

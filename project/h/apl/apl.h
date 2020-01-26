@@ -33,8 +33,8 @@
 #define	APPLICATION_LAYER_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-#include <stdint.h>
-#include <stdbool.h>
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
 
 /* User Configuration Files */
 #include "apl/config/UserAppManager.h"

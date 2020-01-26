@@ -34,10 +34,10 @@
 #define	__MCAL_P33_SMPS_MAILBOXES_H__
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-#include <stdint.h>
-#include <stdbool.h>
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
 
-#include "../p33SMPS_devices.h"
+#include "../p33SMPS_devices.h" // DEVICES header to derive device-dependent properties
 
 #if defined (__P33SMPS_CH_MSTR__)
 

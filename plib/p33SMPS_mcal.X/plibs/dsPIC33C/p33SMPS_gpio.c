@@ -34,6 +34,7 @@
  * When a smaller device is specified in the user project, compilation fails.
  */
 
+// Include Header Files
 #include "p33SMPS_gpio.h"
 
 // Private Function Prototypes

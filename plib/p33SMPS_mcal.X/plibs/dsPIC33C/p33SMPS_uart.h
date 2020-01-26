@@ -40,12 +40,13 @@
 #ifndef MCAL_P33SMPS_UART_H
 #define MCAL_P33SMPS_UART_H
 
-#include <xc.h>
-#include <stdint.h>
-#include <stdbool.h>
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
+#include <stddef.h> // include standard definition types header file
 
-#include "../../p33SMPS_plib.h" // PLIB header required to get access to oscillator driver declarations
 #include "../p33SMPS_devices.h" // DEVICES header to derive device-dependent properties
+#include "../../p33SMPS_plib.h" // PLIB header required to get access to oscillator driver declarations
 
 /*!p33SMPS_uart.h
  * ************************************************************************************************

@@ -31,6 +31,9 @@
 #ifndef MCAL_INTERRUPT_CONTROLLER_INITIALIZE_H
 #define	MCAL_INTERRUPT_CONTROLLER_INITIALIZE_H
 
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+
 /* ***********************************************************************************************
  * PROTOTYPES
  * ***********************************************************************************************/

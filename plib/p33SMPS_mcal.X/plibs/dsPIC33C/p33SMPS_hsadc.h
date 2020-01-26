@@ -24,10 +24,13 @@
 #ifndef MCAL_P33SMPS_HSADC_H
 #define MCAL_P33SMPS_HSADC_H
 
-#include <stdint.h>
-#include <math.h>
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
+#include <math.h> // include standard math library header file
 
-#include "../p33SMPS_devices.h"
+#include "../p33SMPS_devices.h" // DEVICES header to derive device-dependent properties
+
 #if defined (__P33SMPS_CH__) || defined (__P33SMPS_CK__)
 
 

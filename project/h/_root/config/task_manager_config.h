@@ -43,8 +43,10 @@
  * DEFAULT INCLUDES
  * ***********************************************************************************************/
 
-#include <stdint.h>
-#include <math.h>
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
+#include <math.h> // include standard math library header file
+
 #include "mcal/mcal.h" // required to include p33SMPS_devices.h
 #include "mcal/config/devcfg_oscillator.h"
 

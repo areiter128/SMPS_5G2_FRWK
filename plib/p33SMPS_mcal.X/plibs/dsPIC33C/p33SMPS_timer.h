@@ -40,10 +40,11 @@
 #ifndef MCAL_P33SMPS_TIMER_H
 #define MCAL_P33SMPS_TIMER_H
 
-#include <xc.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include "../p33SMPS_devices.h"
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
+
+#include "../p33SMPS_devices.h" // DEVICES header to derive device-dependent properties
 
 /*!p33FGS_timer.h
  * ************************************************************************************************

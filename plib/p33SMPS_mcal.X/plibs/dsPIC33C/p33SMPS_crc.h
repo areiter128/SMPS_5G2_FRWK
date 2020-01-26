@@ -31,13 +31,12 @@
 #ifndef _MCAL_P33_SMPS_CRC_H_
 #define	_MCAL_P33_SMPS_CRC_H_
 
-#include <xc.h>
-#include <stdint.h>
-#include <stdbool.h>
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
 
-#include "../../p33SMPS_plib.h" // PLIB header required to get access to oscillator driver declarations
 #include "../p33SMPS_devices.h" // DEVICES header to derive device-dependent properties
-
+#include "../../p33SMPS_plib.h" // PLIB header required to get access to oscillator driver declarations
 
 #ifdef	__cplusplus
 extern "C" {

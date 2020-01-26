@@ -27,8 +27,7 @@
  *
  * Created on October 04, 2018, 11:24 AM
  * ***************************************************************************/
-
-
+// Include Header Files
 #include "p33SMPS_mailboxes.h"
 
 /*!smpsMBX_Reset

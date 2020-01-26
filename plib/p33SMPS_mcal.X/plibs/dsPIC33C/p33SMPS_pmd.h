@@ -38,8 +38,10 @@
 #define	MCAL_P33SMPS_PDM_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-#include <stdint.h>
-#include "../p33SMPS_devices.h"
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
+
+#include "../p33SMPS_devices.h" // DEVICES header to derive device-dependent properties
 
 // Direct control macros for peripheral modules
 #define PMD_TIMER1_POWER_ON   {_T1MD = 0}

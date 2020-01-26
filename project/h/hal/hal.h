@@ -30,8 +30,9 @@
 #ifndef HARDWARE_ABSTRACTION_LAYER_H
 #define	HARDWARE_ABSTRACTION_LAYER_H
 
-#include <xc.h>
-#include <stdbool.h>
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
 
 #include "mcal/mcal.h" // connect hardware to selected microcontroller
 

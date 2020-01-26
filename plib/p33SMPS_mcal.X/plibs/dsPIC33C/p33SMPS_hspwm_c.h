@@ -24,10 +24,11 @@
 #ifndef MCAL_P33SMPS_HSPWM_H
 #define MCAL_P33SMPS_HSPWM_H
 
-#include <stdint.h>
-#include <stdbool.h>
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
 
-#include "../p33SMPS_devices.h"
+#include "../p33SMPS_devices.h" // DEVICES header to derive device-dependent properties
 
 /*!p33MP_hspwm.h
  * ************************************************************************************************

@@ -29,10 +29,11 @@
 #define	_HARDWARE_ABSTRACTION_LAYER_SYSTEM_SCALING_H_
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-#include <stdint.h>
-#include <stdbool.h>
-#include <dsp.h>
-#include <math.h>
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
+#include <stddef.h> // include standard definition types header file
+#include <math.h> // include standard math library header file
+#include <dsp.h> // include DSP library header file
 
 #include "hal/hal.h"
 

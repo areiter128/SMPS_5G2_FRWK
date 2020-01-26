@@ -21,14 +21,7 @@
  *
  * ***********************************************************************************************/
 
-#include <stdint.h>
-#include "p33SMPS_irq.h"
-
-// Device header file
-#include <xc.h>
-#include <stdint.h>
-#include <stdbool.h>
-
+// Include Header Files
 #include "p33SMPS_irq.h"
 
 /*!p33SMPS_irq.c

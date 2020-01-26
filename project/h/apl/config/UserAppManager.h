@@ -54,8 +54,8 @@
 #define	APL_USER_APPLICATION_MANAGER_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-#include <stdint.h>
-#include <stdbool.h>
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
 
 #include "apl/apl.h"
 #include "hal/hal.h"

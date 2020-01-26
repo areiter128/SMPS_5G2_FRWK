@@ -30,6 +30,9 @@
 #ifndef MCAL_DSP_INITIALIZATION_H
 #define	MCAL_DSP_INITIALIZATION_H
 
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+
 /* ***********************************************************************************************
  * PROTOTYPES
  * ***********************************************************************************************/

@@ -45,8 +45,8 @@
 #ifndef _ROOT_TASK_MANAGER_H_
 #define	_ROOT_TASK_MANAGER_H_
     
-#include <stdint.h>
-#include <stdbool.h>
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
 
 /* Data structures */
 

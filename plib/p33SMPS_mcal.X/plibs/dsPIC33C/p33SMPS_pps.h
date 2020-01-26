@@ -33,14 +33,16 @@
  * See Also:
  *	p33SMPS_pps.c
  * ***********************************************************************************************/
-// Device header file
-#include <xc.h>
-#include <stdint.h>
 
 #ifndef MCAL_P33SMPS_PPS_H
 #define MCAL_P33SMPS_PPS_H
 
-#include "../p33SMPS_devices.h"
+// Device header file
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
+
+#include "../p33SMPS_devices.h" // DEVICES header to derive device-dependent properties
 
 // Default definitions for all de4vices
 

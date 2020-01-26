@@ -30,10 +30,9 @@
 #ifndef MCAL_PORT_AND_PIN_CONFIGURATION_H
 #define	MCAL_PORT_AND_PIN_CONFIGURATION_H
 
-#include <xc.h>
-#include <stdint.h>
-#include <stdbool.h>
-    
+#include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdint.h> // include standard integer types header file
+  
 /* ***********************************************************************************************
  * PROTOTYPES
  * ***********************************************************************************************/

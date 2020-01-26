@@ -32,8 +32,9 @@
 #define	MCAL_DEVICE_CONFIGURATION_OSCILLATOR_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-#include <stdint.h>
-#include <stdbool.h>
+#include <stdint.h> // include standard integer types header file
+#include <stdbool.h> // include standard boolean types header file
+
 #include "mcal/mcal.h"
 
 // ToDo: Add your user setting here

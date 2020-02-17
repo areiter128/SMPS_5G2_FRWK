@@ -232,7 +232,7 @@
 #if (USE_TASK_EXECUTION_CLOCKOUT_PIN == 1)
     #define TS_CLOCKOUT_PIN_WR              DBGPIN_WR   // Specify Clock Output Pin port latch register
     #define TS_CLOCKOUT_PIN_INIT_OUTPUT     DBGPIN_INIT_OUTPUT;    // Specify Clock Output Pin configuration
-    #define USE_DETAILED_CLOCKOUT_PATTERN   1           // Enable/Disable detailed clock pattern
+    #define USE_DETAILED_CLOCKOUT_PATTERN   0           // Enable/Disable detailed clock pattern
 #endif
 
 /*!USE_TASK_MANAGER_TIMING_DEBUG_ARRAYS
@@ -278,30 +278,22 @@
  * (none)
  * ***********************************************************************************************/
 
-#define TASK_MGR_TIME_STEP                  (float)(100.0e-6)     // Schedule time step in [sec]
+#define TASK_MGR_MASTER_PACE                (float)(100.0e-6)     // Schedule time step in [sec]
+#define TASK_MGR_RESCUE_PACE                (float)(200.0e-6)     // Rescue timer time step in [sec]
     
-#define TASK_MGR_PERIOD                     (uint16_t)((float)system_frequencies.fcy * (float)TASK_MGR_TIME_STEP)
+#define TASK_MGR_MASTER_PERIOD              (uint16_t)((float)system_frequencies.fcy * (float)TASK_MGR_MASTER_PACE)
+#define TASK_MGR_RESCUE_PERIOD              (uint16_t)((float)system_frequencies.fcy * (float)TASK_MGR_RESCUE_PACE)
 
 #define TASK_MGR_TIMER_INDEX                1       // Index of the timer peripheral used
 #define TASK_MGR_TIMER_COUNTER_REGISTER     TMR1    // Timer counter register
 #define TASK_MGR_TIMER_PERIOD_REGISTER      PR1     // Timer Period register
-#define TASK_MGR_TIMER_ISR_FLAG_REGISTER    IFS0    // Timer Interrupt Flag Register
-#define TASK_MGR_ISR_PRIORITY               1       // Timer ISR priority (Always leave 1))
+#define TASK_MGR_ISR_PRIORITY               3       // Timer ISR priority (Always leave 1))
+#define TASK_MGR_TMR_IF                     _T1IF   // Timer ISR Flag Bit
+#define TASK_MGR_TMR_IE                     _T1IE   // Timer ISR Enable Bit
+#define TASK_MGR_TMR_IP                     _T1IP   // Timer ISR Priority setting
+#define _RescueTimer_Interrupt              _T1Interrupt    // Timer Interrupt Service Routine used for the Rescue Timer
 #define TASK_MGR_ISR_STATE                  0       // Timer ISR state (0=disabled, 1=enabled)
                                                     // (PLEASE DO NOT ENABLE)
-
-// Timer Interrupt Flag Register Bit Mask
-#if defined (__P33SMPS_CK1__) || defined (__P33SMPS_CK2__) || defined (__P33SMPS_CK5__)
-  #define TASK_MGR_TIMER_ISR_FLAG_BIT_MASK        0b0000000000000010
-#elif defined (__P33SMPS_CH2__) || defined (__P33SMPS_CH5__)
-  #define TASK_MGR_TIMER_ISR_FLAG_BIT_MASK        0b0000000000000010
-#elif defined (__P33SMPS_EP2__) || defined (__P33SMPS_EP5__) || defined (__P33SMPS_EP7__)
-  #define TASK_MGR_TIMER_ISR_FLAG_BIT_MASK        0b0000000000001000
-#elif defined (__P33SMPS_FJ__) || defined (__P33SMPS_FJA__) || defined (__P33SMPS_FJC__)
-  #define TASK_MGR_TIMER_ISR_FLAG_BIT_MASK        0b0000000000001000
-#else
-  #error === selected device family could not be indentified or is not supported by the task manager  ===
-#endif
     
 /*!CPU Meter Configuration
  * ***********************************************************************************************
@@ -334,7 +326,14 @@
  * See also:
  * (none)
  * ***********************************************************************************************/
-#if __XC16_VERSION > 1041   // Example: v1.36 is represented by 1036
+
+#define CPU_LOAD_WARNING    950U    // Maximum CPU load which triggers a FAULT WARNING
+#define CPU_LOAD_NORMAL     800U    // Allowed maximum CPU load which does not trigger a FAULT WARNING
+                                    // CPU Load is captured as integer number between 0 and 1000
+                                    // representing a value between 0 and 100% with one digit accuracy
+                                    // Example: CPU workload of 853 = 85.3%
+
+#if __XC16_VERSION > 1050   // Example: v1.36 is represented by 1036
     #pragma message "=== The CPU Load Meter has not been tested with the recent compiler version ==="
     // If this message occurs in the output window, please verify the constants 
     // TASK_MGR_CPU_LOAD_NOMBLK by using the MPLAB X stopwatch (see comment above)
@@ -344,27 +343,27 @@
 // CPU Load Monitor Counter Loop Performance Settings on dsPIC33CH MP Devices
 
     #ifdef __CODE_OPT_LEVEL_0__
-        #define TASK_MGR_CPU_LOAD_NOMBLK            28      // Number of cycles for one TxIF-wait while loop iteration at code optimization #0
+        #define TASK_MGR_CPU_LOAD_NOMBLK            30      // Number of cycles for one TxIF-wait while loop iteration at code optimization #0
     #endif
     #ifdef __CODE_OPT_LEVEL_1__
-        #define TASK_MGR_CPU_LOAD_NOMBLK            20      // Number of cycles for one TxIF-wait while loop iteration at code optimization #1
+        #define TASK_MGR_CPU_LOAD_NOMBLK            22      // Number of cycles for one TxIF-wait while loop iteration at code optimization #1
     #endif
     #ifdef __CODE_OPT_LEVEL_2__
-        #define TASK_MGR_CPU_LOAD_NOMBLK            23      // Number of cycles for one TxIF-wait while loop iteration at code optimization #2
+        #define TASK_MGR_CPU_LOAD_NOMBLK            24      // Number of cycles for one TxIF-wait while loop iteration at code optimization #2
     #endif
     #ifdef __CODE_OPT_LEVEL_s__
-        #define TASK_MGR_CPU_LOAD_NOMBLK            23      // Number of cycles for one TxIF-wait while loop iteration at code optimization #s
+        #define TASK_MGR_CPU_LOAD_NOMBLK            24      // Number of cycles for one TxIF-wait while loop iteration at code optimization #s
     #endif
     #ifdef __CODE_OPT_LEVEL_3__
-        #define TASK_MGR_CPU_LOAD_NOMBLK            23      // Number of cycles for one TxIF-wait while loop iteration at code optimization #3
+        #define TASK_MGR_CPU_LOAD_NOMBLK            24      // Number of cycles for one TxIF-wait while loop iteration at code optimization #3
     #endif
     #ifdef __CODE_OPT_LEVEL_USR__
-        #define TASK_MGR_CPU_LOAD_NOMBLK            21      // Number of cycles for one TxIF-wait while loop iteration at user configured code optimization 
+        #define TASK_MGR_CPU_LOAD_NOMBLK            26      // Number of cycles for one TxIF-wait while loop iteration at user configured code optimization 
     #endif
 
 #endif
 
-#define TASK_MGR_CPU_LOAD_FACTOR    (uint16_t)(((float)(1000.000)/(float)(TASK_MGR_PERIOD))*pow(2, 16))
+#define TASK_MGR_CPU_LOAD_FACTOR    (uint16_t)(((float)(1000.000)/(float)(TASK_MGR_MASTER_PERIOD))*pow(2, 16))
 
 /*!Software CPU Reset Occurrence Limit
  * ***********************************************************************************************

@@ -1422,6 +1422,80 @@
 	
 #elif defined (__P33SMPS_CH_SLV1__)
 
+// Device Pin #8 is RD15
+	#define DBGLED_TRIS    TRISDbits.TRISD15 // GPIO direction register bit
+	#define DBGLED_WR      LATDbits.LATD15 // GPIO port latch register bit
+	#define DBGLED_RD      PORTDbits.RD15 // GPIO port register bit
+	#define DBGLED_ODC     ODCDbits.ODCD15 // GPIO port open drain configuration register bit
+	#define DBGLED_CNPU    CNPUDbits.CNPUD15 // GPIO port pull-up resistor register bit
+	#define DBGLED_CNPD    CNPDDbits.CNPDD15 // GPIO port pull-down resistor register bit
+	#define DBGLED_CNEN0   CNEN0Dbits.CNEN0D15 // GPIO port change notification Enable register bit
+	#define DBGLED_CNSTAT  CNSTATDbits.CNSTATD15 // GPIO port change notification Status register bit
+	#define DBGLED_CNEN1   CNEN1Dbits.CNEN1D15 // GPIO port change notification Edge Select Enable register bit
+	#define DBGLED_CNF     CNFDbits.CNFD15 // GPIO port change notification flag bit register bit
+	#define DBGLED_SET     { asm volatile ("bset _LATD, #15 \n"); }
+	#define DBGLED_CLEAR   { asm volatile ("bclr _LATD, #15 \n"); }
+	#define DBGLED_TOGGLE  { asm volatile ("btg  _LATD, #15 \n"); }
+	#define DBGLED_IS_ANALOG_INPUT  0 // Pin is/is not analog input 
+	#define DBGLED_INIT_OUTPUT  {DBGLED_WR = PINSTATE_LOW; DBGLED_TRIS = PINDIR_OUTPUT;} // initialization macro for digital output
+	#define DBGLED_INIT_INPUT   {DBGLED_WR = PINSTATE_HIGH; DBGLED_TRIS = PINDIR_INPUT;} // initialization macro for digital input
+	
+
+// Device Pin #12 is RD13
+	#define DBGPIN_TRIS    TRISDbits.TRISD13 // GPIO direction register bit
+	#define DBGPIN_WR      LATDbits.LATD13 // GPIO port latch register bit
+	#define DBGPIN_RD      PORTDbits.RD13 // GPIO port register bit
+	#define DBGPIN_ODC     ODCDbits.ODCD13 // GPIO port open drain configuration register bit
+	#define DBGPIN_CNPU    CNPUDbits.CNPUD13 // GPIO port pull-up resistor register bit
+	#define DBGPIN_CNPD    CNPDDbits.CNPDD13 // GPIO port pull-down resistor register bit
+	#define DBGPIN_CNEN0   CNEN0Dbits.CNEN0D13 // GPIO port change notification Enable register bit
+	#define DBGPIN_CNSTAT  CNSTATDbits.CNSTATD13 // GPIO port change notification Status register bit
+	#define DBGPIN_CNEN1   CNEN1Dbits.CNEN1D13 // GPIO port change notification Edge Select Enable register bit
+	#define DBGPIN_CNF     CNFDbits.CNFD13 // GPIO port change notification flag bit register bit
+	#define DBGPIN_SET     { asm volatile ("bset _LATD, #13 \n"); }
+	#define DBGPIN_CLEAR   { asm volatile ("bclr _LATD, #13 \n"); }
+	#define DBGPIN_TOGGLE  { asm volatile ("btg  _LATD, #13 \n"); }
+	#define DBGPIN_IS_ANALOG_INPUT  0 // Pin is/is not analog input 
+	#define DBGPIN_INIT_OUTPUT  {DBGPIN_WR = PINSTATE_LOW; DBGPIN_TRIS = PINDIR_OUTPUT;} // initialization macro for digital output
+	#define DBGPIN_INIT_INPUT   {DBGPIN_WR = PINSTATE_HIGH; DBGPIN_TRIS = PINDIR_INPUT;} // initialization macro for digital input
+	
+// Device Pin #6 is RC15
+	#define UART_RX_TRIS    TRISCbits.TRISC15 // GPIO direction register bit
+	#define UART_RX_WR      LATCbits.LATC15 // GPIO port latch register bit
+	#define UART_RX_RD      PORTCbits.RC15 // GPIO port register bit
+	#define UART_RX_ODC     ODCCbits.ODCC15 // GPIO port open drain configuration register bit
+	#define UART_RX_CNPU    CNPUCbits.CNPUC15 // GPIO port pull-up resistor register bit
+	#define UART_RX_CNPD    CNPDCbits.CNPDC15 // GPIO port pull-down resistor register bit
+	#define UART_RX_CNEN0   CNEN0Cbits.CNEN0C15 // GPIO port change notification Enable register bit
+	#define UART_RX_CNSTAT  CNSTATCbits.CNSTATC15 // GPIO port change notification Status register bit
+	#define UART_RX_CNEN1   CNEN1Cbits.CNEN1C15 // GPIO port change notification Edge Select Enable register bit
+	#define UART_RX_CNF     CNFCbits.CNFC15 // GPIO port change notification flag bit register bit
+	#define UART_RX_RP      63 // Number of Remappable Pin
+	#define UART_RX_SET     { asm volatile ("bset _LATC, #15 \n"); }
+	#define UART_RX_CLEAR   { asm volatile ("bclr _LATC, #15 \n"); }
+	#define UART_RX_TOGGLE  { asm volatile ("btg  _LATC, #15 \n"); }
+	#define UART_RX_IS_ANALOG_INPUT  0 // Pin is/is not analog input 
+	#define UART_RX_INIT_OUTPUT  {UART_RX_WR = PINSTATE_LOW; UART_RX_TRIS = PINDIR_OUTPUT;} // initialization macro for digital output
+	#define UART_RX_INIT_INPUT   {UART_RX_WR = PINSTATE_HIGH; UART_RX_TRIS = PINDIR_INPUT;} // initialization macro for digital input
+	
+// Device Pin #5 is RC14
+	#define UART_TX_TRIS    TRISCbits.TRISC14 // GPIO direction register bit
+	#define UART_TX_WR      LATCbits.LATC14 // GPIO port latch register bit
+	#define UART_TX_RD      PORTCbits.RC14 // GPIO port register bit
+	#define UART_TX_ODC     ODCCbits.ODCC14 // GPIO port open drain configuration register bit
+	#define UART_TX_CNPU    CNPUCbits.CNPUC14 // GPIO port pull-up resistor register bit
+	#define UART_TX_CNPD    CNPDCbits.CNPDC14 // GPIO port pull-down resistor register bit
+	#define UART_TX_CNEN0   CNEN0Cbits.CNEN0C14 // GPIO port change notification Enable register bit
+	#define UART_TX_CNSTAT  CNSTATCbits.CNSTATC14 // GPIO port change notification Status register bit
+	#define UART_TX_CNEN1   CNEN1Cbits.CNEN1C14 // GPIO port change notification Edge Select Enable register bit
+	#define UART_TX_CNF     CNFCbits.CNFC14 // GPIO port change notification flag bit register bit
+	#define UART_TX_RP      62 // Number of Remappable Pin
+	#define UART_TX_SET     { asm volatile ("bset _LATC, #14 \n"); }
+	#define UART_TX_CLEAR   { asm volatile ("bclr _LATC, #14 \n"); }
+	#define UART_TX_TOGGLE  { asm volatile ("btg  _LATC, #14 \n"); }
+	#define UART_TX_IS_ANALOG_INPUT  0 // Pin is/is not analog input 
+	#define UART_TX_INIT_OUTPUT  {UART_TX_WR = PINSTATE_LOW; UART_TX_TRIS = PINDIR_OUTPUT;} // initialization macro for digital output
+	#define UART_TX_INIT_INPUT   {UART_TX_WR = PINSTATE_HIGH; UART_TX_TRIS = PINDIR_INPUT;} // initialization macro for digital input
 
 
 #endif

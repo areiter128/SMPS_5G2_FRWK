@@ -74,10 +74,10 @@
 #pragma config DMTIVTH = 0    // Dead Man Timer Interval high word->
 
 // FDMTCNTL
-#pragma config DMTCNTL = 0    // Lower 16 bits of 32 bit DMT instruction count time-out value (0-0xFFFF)->
+#pragma config DMTCNTL = 0xFFFF    // Lower 16 bits of 32 bit DMT instruction count time-out value (0-0xFFFF)->
 
 // FDMTCNTH
-#pragma config DMTCNTH = 0    // Upper 16 bits of 32 bit DMT instruction count time-out value (0-0xFFFF)->
+#pragma config DMTCNTH = 0xFFFF    // Upper 16 bits of 32 bit DMT instruction count time-out value (0-0xFFFF)->
 
 // FDMT
 #pragma config DMTDIS = OFF    // Dead Man Timer Disable bit->Dead Man Timer is Disabled and can be enabled by software

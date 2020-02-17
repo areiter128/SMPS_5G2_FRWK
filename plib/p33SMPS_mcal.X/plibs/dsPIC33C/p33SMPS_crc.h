@@ -42,6 +42,8 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#if defined (__P33SMPS_CH_MSTR__) || defined (__P33SMPS_CK__)
+    
 /* ===========================================================================
  * CRCCONH/L: CRC CONTROL REGISTER HIGH/LOW
  * ===========================================================================*/
@@ -437,5 +439,7 @@ extern volatile uint16_t smpsCRC_GetStandard_Data8CRC16(
 }
 #endif /* __cplusplus */
 
+
+#endif  /* only dsPIC33CH master core and dsPIC33CK have a CRC peripheral */
 #endif	/* _MCAL_P33_SMPS_CRC_H_ */
 

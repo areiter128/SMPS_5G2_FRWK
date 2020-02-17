@@ -178,8 +178,8 @@
 
 /* INTCON4 Settings */
 
-#define IRQ_INTTREG_CFG    (REG_INTTREG_ILR_0 | \
-                            REG_INTTREG_VHOLD_CLEAR | \
+#define IRQ_INTTREG_CFG    (REG_INTTREG_ILR_0 & \
+                            REG_INTTREG_VHOLD_CLEAR & \
                             REG_INTTREG_VECNUM_CLEAR \
                             )
 

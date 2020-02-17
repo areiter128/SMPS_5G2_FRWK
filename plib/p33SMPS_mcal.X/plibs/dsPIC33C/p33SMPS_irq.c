@@ -52,7 +52,7 @@
 volatile uint16_t smpsIRQ_Initialize(volatile INTERRUPT_CONFIG_t intcon)
 {
 
-    volatile uint16_t fres=0;
+    volatile uint16_t fres=1;
     volatile uint16_t reg_buf=0;
 
 	reg_buf = (intcon.intcon1.value & REG_INTCON1_WRITE_BIT_MSK);

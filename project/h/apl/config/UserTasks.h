@@ -126,6 +126,7 @@
  * *****************************************************************************************************/
 
 extern volatile uint16_t(*Task_Table[])(void);
+extern volatile uint16_t task_table_size;
 
 /*!task_id_no_e
  * *****************************************************************************************************
@@ -140,13 +141,21 @@ typedef enum {
 
     /* ===== USER FUNCTIONS LIST ===== */
 
+
+    
         
     /* ===== END OF USER FUNCTIONS ===== */
 
     // Empty task used as internal task execution timing buffer
-    TASK_IDLE  // Default task not performing any action but occupying a task time frame
+    TASK_IDLE  // Default task not performing any action but occupying a task time execution frame
 
 } task_id_no_e;
+
+
+// The generic declaration of TASK_TABLE_SIZE can be used globally to 
+// determine the total number of tasks listed in/managed by the task manager
+// PLEASE NOTE: TASK_IDLE ALWAYS NEEDS TO BE THE LAST ITEM OF THE LIST (!!!)
+#define TASK_TABLE_SIZE     (uint16_t)(TASK_IDLE+1)
 
 /*!Task Queues
  *  *****************************************************************************************************

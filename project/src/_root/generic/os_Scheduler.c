@@ -42,6 +42,8 @@ void __attribute__((user_init)) OS_Execute(void) {
 
     // Local variables
     volatile uint16_t fres = 1;  // Internal test variable tracking return values of sub-functions
+    volatile uint32_t dmt_cnt = 0; // Buffer for dead man timer counter check
+    volatile uint16_t tmr_cnt = 0; // Buffer variable for system timer check
     
     #if (USE_TASK_MANAGER_TIMING_DEBUG_ARRAYS == 1)
     volatile uint16_t cnt=0; // In debug mode , this counter is used to fill profiling arrays
@@ -70,74 +72,70 @@ void __attribute__((user_init)) OS_Execute(void) {
     // Initialize task manager and OS and user defined fault objects
     fres &= OS_Initialize();
 
+    DMTCONbits.ON = 1;  // Enable Dead Man Timer
+    
     // after the basic steps, the rest of the configuration runs as part of the scheduler,
     // where execution can be monitored and faults can be properly handled.
     while (run_scheduler) 
     {
       
+        // Clear Dead Man Timer counter
+        if(DMTSTATbits.WINOPN) {
+            DMTPRECLRbits.STEP1 = 0b01000000;
+            DMTCLRbits.STEP2 = 0b00001000;
+        }
+        
+        task_mgr.cpu_load.ticks = 0; // Clear CPU tick counter
+
         // Wait for timer to expire before calling the next task
-        while (
-            !(TASK_MGR_TIMER_ISR_FLAG_REGISTER & TASK_MGR_TIMER_ISR_FLAG_BIT_MASK) && 
-             (task_mgr.cpu_load.ticks != task_mgr.task_time_ctrl.quota)
-            )
+        while ((!TASK_MGR_TMR_IF) && (*task_mgr.os_timer.reg_counter != tmr_cnt))
         {
-            // Increment CPU tick counter
-            task_mgr.cpu_load.ticks++;
+            task_mgr.cpu_load.ticks++;                          // Increment CPU tick counter
+            tmr_cnt = *task_mgr.os_timer.reg_counter;           // Capture system timer counter
         }
 
-    #if (USE_TASK_EXECUTION_CLOCKOUT_PIN == 1)
-    #ifdef TS_CLOCKOUT_PIN_WR
-    TS_CLOCKOUT_PIN_WR = PINSTATE_HIGH; // Drive debug pin high
-    #endif
-    #endif
+        dmt_cnt = (((uint32_t)DMTCNTH << 16) | DMTCNTL);    // Capture Dead Man Timer counter
+        
+#if (USE_TASK_EXECUTION_CLOCKOUT_PIN == 1)
+#ifdef TS_CLOCKOUT_PIN_WR
+TS_CLOCKOUT_PIN_WR = PINSTATE_HIGH; // Drive debug pin high
+#endif
+#endif
 
-        // CPU Meter Fault Trigger for CPU Load Lockout Check
-        if(task_mgr.cpu_load.ticks >= task_mgr.task_time_ctrl.quota){
-            // When this error condition has been detected, something went wrong with
-            // the timer interrupt bit (oscillator, timer or interrupt controller is corrupted)
-            // => Immediate reconfiguration and firmware initialization is required
+        // Calculate CPU load based on incremented ticks during while loop
+        task_mgr.cpu_load.ticks *= task_mgr.cpu_load.loop_nomblk;    // Calculate the accumulated CPU cycles
+        task_mgr.cpu_load.load  = (1000 - (uint16_t)((task_mgr.cpu_load.ticks * task_mgr.cpu_load.load_factor)>>16));
+        task_mgr.cpu_load.load_max_buffer |= task_mgr.cpu_load.load;
 
-            task_mgr.op_mode.value = OP_MODE_BOOT;                               // Boot mode will force re-config
-            task_mgr.task_queue_tick_index = (task_mgr.task_queue_ubound + 1);    // setting index to maximum will trip op_mode switch
 
-        }
-        else    // Task scheduling is running as expected => Continue with next task
-        {   
-            task_mgr.cpu_load.ticks *= task_mgr.cpu_load.loop_nomblk;    // Calculate the accumulated CPU cycles
-            task_mgr.cpu_load.load  = (uint16_t)((task_mgr.cpu_load.ticks * task_mgr.cpu_load.load_factor)>>16);
-            task_mgr.cpu_load.load_max_buffer |= task_mgr.cpu_load.load;
-            task_mgr.cpu_load.ticks = 0; // Reset CPU tick counter
-
-        }
-
-        TASK_MGR_TIMER_ISR_FLAG_REGISTER &= (~TASK_MGR_TIMER_ISR_FLAG_BIT_MASK); // Reset timer ISR flag bit
+        TASK_MGR_TMR_IF = 0; // Reset timer ISR flag bit
 
         
-    #if ((USE_TASK_EXECUTION_CLOCKOUT_PIN == 1) && (USE_DETAILED_CLOCKOUT_PATTERN == 1))
-    #ifdef TS_CLOCKOUT_PIN_WR
-    TS_CLOCKOUT_PIN_WR = PINSTATE_LOW;                  // Drive debug pin low
-    #endif
-    #endif
+#if ((USE_TASK_EXECUTION_CLOCKOUT_PIN == 1) && (USE_DETAILED_CLOCKOUT_PATTERN == 1))
+#ifdef TS_CLOCKOUT_PIN_WR
+TS_CLOCKOUT_PIN_WR = PINSTATE_LOW;                  // Drive debug pin low
+#endif
+#endif
         
         // Call most recent task with execution time measurement
         fres &= os_ProcessTaskQueue();     // Step through pre-defined task lists
 
-    #if ((USE_TASK_EXECUTION_CLOCKOUT_PIN == 1) && (USE_DETAILED_CLOCKOUT_PATTERN == 1))
-    #ifdef TS_CLOCKOUT_PIN_WR
-    TS_CLOCKOUT_PIN_WR = PINSTATE_LOW;                 // Drive debug pin high
-    #endif
-    #endif
+#if ((USE_TASK_EXECUTION_CLOCKOUT_PIN == 1) && (USE_DETAILED_CLOCKOUT_PATTERN == 1))
+#ifdef TS_CLOCKOUT_PIN_WR
+TS_CLOCKOUT_PIN_WR = PINSTATE_HIGH;                 // Drive debug pin high
+#endif
+#endif
 
         // Capture the most recent system status to respond to changes in 
         // user defined, system level states. (calls user-code module)
         fres &= APPLICATION_CaptureSystemStatus();
 
         
-    #if ((USE_TASK_EXECUTION_CLOCKOUT_PIN == 1) && (USE_DETAILED_CLOCKOUT_PATTERN == 1))
-    #ifdef TS_CLOCKOUT_PIN_WR
-    TS_CLOCKOUT_PIN_WR = PINSTATE_HIGH;                 // Drive debug pin high
-    #endif
-    #endif
+#if ((USE_TASK_EXECUTION_CLOCKOUT_PIN == 1) && (USE_DETAILED_CLOCKOUT_PATTERN == 1))
+#ifdef TS_CLOCKOUT_PIN_WR
+TS_CLOCKOUT_PIN_WR = PINSTATE_LOW;                 // Drive debug pin high
+#endif
+#endif
 
         // 'fres'-check is mapped into the operating system component check status bit
         task_mgr.status.bits.os_component_check = fres;
@@ -145,11 +143,11 @@ void __attribute__((user_init)) OS_Execute(void) {
         // call the fault handler to check all defined fault objects
         fres &= exec_FaultCheckAll();
         
-    #if ((USE_TASK_EXECUTION_CLOCKOUT_PIN == 1) && (USE_DETAILED_CLOCKOUT_PATTERN == 1))
-    #ifdef TS_CLOCKOUT_PIN_WR
-    TS_CLOCKOUT_PIN_WR = PINSTATE_HIGH;                 // Drive debug pin low
-    #endif
-    #endif
+#if ((USE_TASK_EXECUTION_CLOCKOUT_PIN == 1) && (USE_DETAILED_CLOCKOUT_PATTERN == 1))
+#ifdef TS_CLOCKOUT_PIN_WR
+TS_CLOCKOUT_PIN_WR = PINSTATE_HIGH;                 // Drive debug pin low
+#endif
+#endif
 
     
         // Reset Watchdog Timer
@@ -158,47 +156,51 @@ void __attribute__((user_init)) OS_Execute(void) {
         // ToDo: Add compile switch for option __DEBUG to disable watchdog in debug sessions
         //Remove: fres &= swdt_reset();
         
-        // Increment task table pointer
-        task_mgr.task_queue_tick_index++;
 
-        // if the list index is at/beyond the recent list boundary, roll-over and/or switch task list
-        if ( (task_mgr.task_queue_tick_index > (task_mgr.task_queue_ubound)) ||
+        // if the active queue pointer is at/beyond the queue boundary, roll-over and/or switch task list
+        if ( ((task_mgr.task_queue.active_index + 1) > (task_mgr.task_queue.ubound)) ||
              (task_mgr.pre_op_mode.value != task_mgr.op_mode.value) )
-        // Check for list boundary
+        // Check for list boundary or operating mode switch
         {
             // at the roll-over point (one tick above the array size) the operation mode switch check
             // is executed by default
 
             fres &= os_CheckOperationModeStatus();
-            task_mgr.task_queue_tick_index = 0; // If end of list has been reached, jump back to first item
+            task_mgr.task_queue.active_index = 0; // If end of list has been reached, jump back to first item
+            task_mgr.task_queue.active_task_id = tasks[task_mgr.task_queue.active_index].id;
         }
-
-        
-    #if (USE_TASK_EXECUTION_CLOCKOUT_PIN == 1)
-    #ifdef TS_CLOCKOUT_PIN_WR
-    TS_CLOCKOUT_PIN_WR = PINSTATE_LOW;                  // Drive debug pin low
-    #endif
-    #endif
-
-        
-        
-        #if (USE_TASK_MANAGER_TIMING_DEBUG_ARRAYS == 1)
-        // In debugging mode CPU load and task time is measured and logged in two arrays
-        // to examine the recent code execution profile
-        if(cnt == CPU_LOAD_DEBUG_BUFFER_LENGTH)
-        {
-            Nop();  // place breakpoint here to hold firmware when arrays are filled
-            Nop();
-            Nop();
-            cnt = 0;
-        }
+        // if the active queue pointer is within the queue boundary
         else
         {
-            task_time_buffer[cnt] = task_mgr.task_time_ctrl.task_time;   // Log task most recent time
-            cpu_time_buffer[cnt] = task_mgr.cpu_load.load;    // Log most recent CPU Load
-            cnt++;                                      // Increment array index
+            task_mgr.task_queue.active_index++; // Increment task queue pointer
         }
-        #endif
+
+        
+#if (USE_TASK_EXECUTION_CLOCKOUT_PIN == 1)
+#ifdef TS_CLOCKOUT_PIN_WR
+TS_CLOCKOUT_PIN_WR = PINSTATE_LOW;                  // Drive debug pin low
+#endif
+#endif
+        
+#if (USE_TASK_MANAGER_TIMING_DEBUG_ARRAYS == 1)
+// In debugging mode CPU load and task time is measured and logged in two arrays
+// to examine the recent code execution profile
+#pragma message "CPU Meter and Task Execution Profile Arrays are available"
+
+if(cnt == CPU_LOAD_DEBUG_BUFFER_LENGTH)
+{
+    Nop();  // place breakpoint here to hold firmware when arrays are filled
+    Nop();
+    Nop();
+    cnt = 0;
+}
+else
+{
+    task_time_buffer[cnt] = task_mgr.task_queue.active_task_time;   // Log task most recent time
+    cpu_time_buffer[cnt] = task_mgr.cpu_load.load;    // Log most recent CPU Load
+    cnt++;                                      // Increment array index
+}
+#endif
         
     }   // End of main loop
     // =====================================================================
@@ -234,27 +236,5 @@ void __attribute__((user_init)) OS_Execute(void) {
     return;
 #endif
 
-}
-
-/*!task_Idle
- * ***********************************************************************************************
- * Summary:
- * Source file of idle task
- * 
- * Description:
- * This function is used to register a global function call of the default idle task. The idle task 
- * only executes a single Nop() and is used to keep scheduler tick intervals open.
- * 
- * History:
- * 07/28/2017	File created
- * 11/04/2019   Moved task_IDle to os_Scheduler.c as OS built-in standard task
- * ***********************************************************************************************/
-
-volatile uint16_t task_Idle(void) {
-// Idle tasks might be required to free up additional CPU load for higher
-// priority processes. THerefore it's recommended to leave at least 
-// one Idle cycle in each task list
-    Nop();
-    return(1);
 }
 

@@ -8,6 +8,9 @@
 // Include Header Files
 #include "p33SMPS_crc.h"
 
+#if defined (__P33SMPS_CH_MSTR__) || defined (__P33SMPS_CK__)
+
+
 volatile uint16_t smpsCRC_Initialize (volatile CRC_t crc_config) {
 
     volatile uint16_t fres=1;
@@ -122,4 +125,5 @@ volatile uint16_t smpsCRC_GetStandard_Data8CRC16(
     return(crc_buf);
 }
 
+#endif  /* only dsPIC33CH master core and dsPIC33CK have a CRC peripheral */
 

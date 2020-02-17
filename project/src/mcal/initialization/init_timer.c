@@ -27,7 +27,7 @@ volatile uint16_t OSTimer_Initialize(void) {
     
     // write configuration
     fres &= smpsTimer_Reset(TASK_MGR_TIMER_INDEX); 
-    fres &= smpsTimer_Initialize16b(TASK_MGR_TIMER_INDEX, tmr, TASK_MGR_PERIOD, TASK_MGR_ISR_PRIORITY);
+    fres &= smpsTimer_Initialize16b(TASK_MGR_TIMER_INDEX, tmr, TASK_MGR_MASTER_PERIOD, TASK_MGR_ISR_PRIORITY);
     
     return(fres);
 }

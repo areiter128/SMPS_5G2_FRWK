@@ -51,14 +51,14 @@
 /* Data structures */
 
 typedef enum {
-    OP_MODE_UNKNOWN          = 0b0000000000000000, // Define for unknown state of the task scheduler => ERROR!
-    OP_MODE_BOOT             = 0b0000000000000001, // Operation mode during device start-up => basic task manager setup
-    OP_MODE_FIRMWARE_INIT    = 0b0000000000000010, // User-code modules and generic peripherals configuration (initialization in disabled state)
-    OP_MODE_STARTUP_SEQUENCE = 0b0000000000000100, // User-code module and generic peripheral start sequence
-    OP_MODE_IDLE             = 0b0000000000001000, // Entering Normal operation mode, "NO ACTION" operating mode from which active op-modes are enabled
-    OP_MODE_RUN              = 0b0000000000010000, // System is powered and performing "normal functions"
-    OP_MODE_FAULT            = 0b0100000000000000, // A critical FAULT condition has been detected and system is partially shut down, waiting for a restart-attempt
-    OP_MODE_STANDBY          = 0b1000000000000000  // Standby mode, all sub-modules are disabled and CPU is in low-power mode
+    OP_MODE_UNKNOWN          = 0b00000000, // Define for unknown state of the task scheduler => ERROR!
+    OP_MODE_BOOT             = 0b00000001, // Operation mode during device start-up => basic task manager setup
+    OP_MODE_FIRMWARE_INIT    = 0b00000010, // User-code modules and generic peripherals configuration (initialization in disabled state)
+    OP_MODE_STARTUP_SEQUENCE = 0b00000100, // User-code module and generic peripheral start sequence
+    OP_MODE_IDLE             = 0b00001000, // Entering Normal operation mode, "NO ACTION" operating mode from which active op-modes are enabled
+    OP_MODE_RUN              = 0b00010000, // System is powered and performing "normal functions"
+    OP_MODE_FAULT            = 0b01000000, // A critical FAULT condition has been detected and system is partially shut down, waiting for a restart-attempt
+    OP_MODE_STANDBY          = 0b10000000  // Standby mode, all sub-modules are disabled and CPU is in low-power mode
 } SYSTEM_OPERATION_MODE_e;
 
 typedef union {
@@ -69,17 +69,8 @@ typedef union {
         volatile bool idle;             // Bit #3: Idle operation mode is the generic fall-back op-mode when no other op-mode applies to current conditions
         volatile bool run;              // Bit #4: Normal operation mode is set when system performs the desired default function (whatever this may be needs to be defined)
         volatile unsigned :1;           // Bit #5: (reserved)
-        volatile unsigned :1;           // Bit #6: (reserved)
-        volatile unsigned :1;           // Bit #7: (reserved)
-
-        volatile unsigned :1;           // Bit #8: (reserved)
-        volatile unsigned :1;           // Bit #9: (reserved)
-        volatile unsigned :1;           // Bit #10: (reserved)
-        volatile unsigned :1;           // Bit #11: (reserved)
-        volatile unsigned :1;           // Bit #12: (reserved)
-        volatile unsigned :1;           // Bit #13: (reserved)
-        volatile bool fault;            // Bit #14: Fault mode will be entered when a critical fault condition has been detected
-        volatile bool standby;          // Bit #15: During standby mode the converter is disabled
+        volatile bool fault;            // Bit #6: Fault mode will be entered when a critical fault condition has been detected
+        volatile bool standby;          // Bit #7: During standby mode the converter is disabled
     } __attribute__((packed)) bits;
 	volatile SYSTEM_OPERATION_MODE_e value;
 }SYSTEM_OPERATION_MODE_t;
@@ -94,25 +85,19 @@ typedef struct {
 
 typedef union {
     struct {
-        volatile uint16_t retval; // Function return value
-        volatile uint8_t task_id; // task ID of the function called
+        volatile uint8_t task_id; // task ID of the most recent function
         volatile uint8_t op_mode; // recent operating mode when the function was called
     } __attribute__((packed))segment;
-    volatile uint32_t value;
+    volatile uint16_t value;
 } TASKMGR_PROCESS_CODE_t;
-
-typedef struct {
-    volatile uint16_t quota; // Maximum allowed task execution period
-    volatile uint16_t task_time; // Execution time meter result of most recent called task
-    volatile uint16_t maximum; // Task time meter maximum is tracked and logged
-} __attribute__((packed))TASK_CONTROL_t;
 
 typedef enum {
     EXEC_STAT_FAULT_OVERRIDE        = 0b0000000000000001, // Some fault condition is overriding task settings and actions
     EXEC_STAT_START_COMPLETE        = 0b0000000000000010, // Firmware has passed startup sequence
     EXEC_STAT_QUEUE_SWITCH          = 0b0000000000000100, // Task manager has just switched task queues
     EXEC_STAT_TSKMGR_PER_OVR        = 0b0000000000001000, // Task manager base timer period overrun flag bit
-    EXEC_STAT_OS_COMP_CHECK         = 0b0000000000010000, // Task manager internal component check flag bit
+    EXEC_STAT_RESCUE_TMR_OVR        = 0b0000000000010000, // Rescue timer period overrun flag bit
+    EXEC_STAT_OS_COMP_CHECK         = 0b0000000000100000, // Task manager internal component check flag bit
         
     EXEC_STAT_NOTIFICATION_PENDING  = 0b0010000000000000, // Some condition raised a notification flag
     EXEC_STAT_WARNING_PENDING       = 0b0100000000000000, // Some condition raised a warning flag
@@ -125,8 +110,8 @@ typedef union  {
         volatile bool startup_sequence_complete :1; // Bit #1: Flag bit indicating that device and system startup has been completed
         volatile bool queue_switch :1; // Bit #2: queue_switch occurred (active for one queue loop)
         volatile bool task_mgr_period_overrun :1; // Bit #3:  Flag bit indicating task manager base time has overrun before an execution period was complete
-        volatile bool os_component_check :1; // Bit #4: OS component function return value validation (0=failure, 1=success)
-        volatile unsigned :1; // Bit #5:  (reserved)
+        volatile bool rescue_timer_overrun :1; // Bit #4: Flag bit indicating that the RESCUE TIMER has killed a task
+        volatile bool os_component_check :1; // Bit #5: OS component function return value validation (0=failure, 1=success)
         volatile unsigned :1; // Bit #6:  (reserved)
         volatile unsigned :1; // Bit #7:  (reserved)
 
@@ -135,16 +120,30 @@ typedef union  {
         volatile unsigned :1; // Bit #10: (reserved)
         volatile unsigned :1; // Bit #11: (reserved)
         volatile unsigned :1; // Bit #12: (reserved)
-        volatile bool global_notify :1;	// Bit #13: flag bit indicating the presence of notify events
+        volatile bool global_flag :1;	// Bit #13: flag bit indicating the presence of notify events
         volatile bool global_warning :1;	// Bit #14: flag bit indicating the presence of warning events
         volatile bool global_fault :1;	// Bit #15: flag bit indicating the presence of fault events
     } __attribute__((packed))bits;
 	volatile TASKMGR_STATUS_e value; // buffer for 16-bit word read/write operations
 } TASKMGR_STATUS_t;
 
+typedef struct {
+    volatile uint16_t id; // Task ID 
+    volatile uint16_t time_quota; // Maximum allowed task execution period
+    volatile uint16_t task_period; // Execution time meter result of most recent called task
+    volatile uint16_t task_period_max; // Task period meter maximum is tracked and logged
+    volatile uint16_t return_value; // Most recent return value of called task
+    volatile bool enabled;  // ENABLE/DISABLE flag; When disabled, task call will be replaced by an idle cycle
+} TASKMGR_TASK_CONTROL_t;
+
+extern volatile TASKMGR_TASK_CONTROL_t tasks[];
+
 
 typedef struct {
 
+    /* Global task manager status flags */
+    volatile TASKMGR_STATUS_t status;
+    
     /* System operation mode (selects the active task queue) */
     volatile SYSTEM_OPERATION_MODE_t pre_op_mode; // ID of previous operating mode (=op_mode after switch-over)
     volatile SYSTEM_OPERATION_MODE_t op_mode; // ID of current operating mode
@@ -152,25 +151,29 @@ typedef struct {
     volatile TASKMGR_PROCESS_CODE_t proc_code;   // in case an execution error occurred, this code contains task ID
                                     // and queue ID which caused the error 
     
-    /* Active task queue properties */
-    volatile uint16_t exec_task_id; // Main task ID from task id definition table
-    volatile uint16_t *task_queue; // Pointer to the task queue (lookup table of task flow combinations)
-    volatile uint16_t task_queue_tick_index; // Most recent index of the task queue element to be executed 
-    volatile uint16_t task_queue_ubound; // Number of tasks in the current queue (n-1)
-
-    /* Settings for task scheduler timer */
-    volatile uint16_t task_timer_index; // specifies the timer used for the task manager (e.g. 1 for Timer1)
-    volatile uint16_t *reg_task_timer_period; // Pointer to Timer period register (e.g. PR1)
-    volatile uint16_t *reg_task_timer_counter; // Pointer to Timer counter register (e.g. TMR1))
-
-    /* Generic task execution time control settings and buffer variables */
-    volatile TASK_CONTROL_t task_time_ctrl; // Task time control settings and monitoring
-
     /* CPU Load Meter variables */
     volatile CPU_LOAD_SETTINGS_t cpu_load;
+
+    /* Active task queue properties */
+    struct {
+        volatile uint16_t *active_queue; // Pointer to the task queue (lookup table of task flow combinations)
+        volatile uint16_t active_index; // Most recent index of the task queue element to be executed 
+        volatile uint16_t active_task_id; // Main task ID from task id definition table
+        volatile uint16_t active_retval; // Most recent return value of active task
+        volatile uint16_t active_task_time; // Most recent execution period of active task
+        volatile uint16_t size; // Total number of tasks in the current queue (list size)
+        volatile uint16_t ubound; // Upper index of the current task queue (size-1)
+    } task_queue; // Most recent task queue properties
     
-    /* Global task manager status flags */
-    volatile TASKMGR_STATUS_t status;
+    /* Settings for task scheduler(rescue timer */
+    struct {
+        volatile uint16_t index; // specifies the timer used for the task manager (e.g. 1 for Timer1)
+        volatile uint16_t *reg_period; // Pointer to Timer period register (e.g. PR1)
+        volatile uint16_t *reg_counter; // Pointer to Timer counter register (e.g. TMR1))
+        volatile uint16_t master_period; // Task manager/OS Master Period (basic OS pace tick period)
+        volatile uint16_t rescue_period; // Rescue timer period (maximum period after which stalled tasks should be killed)
+        volatile uint16_t task_period_max; // Logging buffer variable of longest task execution period
+    } os_timer; // Operating system base timer settings
     
 } TASK_MANAGER_t;
 
@@ -182,9 +185,9 @@ extern volatile TASK_MANAGER_t task_mgr; // Declare a data structure holding the
 extern volatile uint16_t OS_Initialize(void);
 extern volatile uint16_t os_TaskManager_Initialize(void);
 
-//extern volatile uint16_t os_TaskManager_Initialize(void);
 extern volatile uint16_t os_ProcessTaskQueue(void);
 extern volatile uint16_t os_CheckOperationModeStatus(void);
 
+extern volatile uint16_t task_Idle(void);
 
 #endif	/* _ROOT_TASK_MANAGER_H_ */

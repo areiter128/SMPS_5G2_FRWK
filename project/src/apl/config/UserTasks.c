@@ -19,9 +19,9 @@
  * MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE 
  * TERMS. 
  * ***************************************************************************/
-/*!tasks.c
+/*!UserTasks.c
  *****************************************************************************
- * File:   tasks.c
+ * File:   UserTasks.c
  *
  * Summary:
  * Defines lists of tasks which will be called by the scheduler
@@ -36,8 +36,8 @@
  * -
  *
  * See also:
- * task_manager.c
- * task_manager.h
+ * os_TaskManager.c
+ * os_TaskManager.h
  * 
  * Revision history: 
  * 07/27/16     Initial version
@@ -74,6 +74,7 @@ volatile uint16_t (*Task_Table[])(void) = {
     /* ==================== USER FUNCTIONS LIST ==================== */
 
 
+
     
     /* ==================== END OF USER FUNCTIONS ==================== */
 
@@ -82,6 +83,8 @@ volatile uint16_t (*Task_Table[])(void) = {
     
 };
 
+// Array size of Task_Table
+volatile uint16_t task_table_size = (sizeof(Task_Table)/sizeof(Task_Table[0]));
 
 /*!Task Queues
  *  *****************************************************************************************************
@@ -194,8 +197,6 @@ volatile uint16_t task_queue_startup_sequence_size =
 
 volatile uint16_t task_queue_idle[] = {
     TASK_IDLE,  // Step #0
-    TASK_IDLE,   // empty task used as task list execution time buffer 
-    TASK_IDLE,   // empty task used as task list execution time buffer 
     TASK_IDLE,   // empty task used as task list execution time buffer 
     TASK_IDLE   // empty task used as task list execution time buffer 
 };

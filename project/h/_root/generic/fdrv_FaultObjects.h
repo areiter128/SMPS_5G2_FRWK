@@ -20,10 +20,11 @@
  */
 
 /* 
- * File:   
- * Author: 
- * Comments:
+ * File:   fdrv_FaultObjects.h
+ * Author: M91406
+ * Comments: Fault handler function driver header file with fault object declarations
  * Revision history: 
+ * 1.0  Initial release
  */
 
 // This is a guard condition so that contents of this file are not included

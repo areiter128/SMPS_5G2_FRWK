@@ -37,6 +37,14 @@
                     <name>MA330048_P33CK_R30</name>
                     <type>2</type>
                 </confElem>
+                <confElem>
+                    <name>MA330049_P33CH_R10</name>
+                    <type>2</type>
+                </confElem>
+                <confElem>
+                    <name>MA330049_P33CH_R10_SLV</name>
+                    <type>2</type>
+                </confElem>
             </confList>
             <formatting>
                 <project-formatting-style>false</project-formatting-style>

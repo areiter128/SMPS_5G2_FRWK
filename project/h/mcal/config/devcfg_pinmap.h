@@ -40,12 +40,15 @@
 extern "C" {
 #endif /* __cplusplus */
 
-    #if defined   __MA330049_R10__
-    // dsPIC33CH512MP506 Digital Power Plug-In Module
-        #include "MA330049_R10_pinmap.h"
-    #elif defined __MA330048_R30__
+    #if defined __MA330048_R30__
     // dsPIC33CK256MP506 Digital Power Plug-In Module
         #include "MA330048_R30_pinmap.h"
+    #elif defined   __MA330049_R10__
+    // dsPIC33CH512MP506 Digital Power Plug-In Module - Master Core
+        #include "MA330049_R10_pinmap.h"
+    #elif defined __MA330049_R10_SLV__
+    // dsPIC33CH512MP506 Digital Power Plug-In Module - Slave Core
+        #include "MA330049_R10_pinmap.h"
     #endif
     
 #ifdef	__cplusplus

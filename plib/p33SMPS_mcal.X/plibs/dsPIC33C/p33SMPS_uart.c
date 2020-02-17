@@ -1075,7 +1075,7 @@ volatile uint32_t smpsUART_GetBaudrate(volatile uint16_t uart_instance) {
  *
  * Description:
  * This routine calculates the CRC16 result across a given number of 8-bit data cells
- * in an 8-bit data array. This function also support calculations across a sub-section
+ * in an 8-bit data array. This function also supports calculations across a sub-section
  * of an array by specifying a start and length parameter.
  * 
  * Example:
